@@ -1,13 +1,11 @@
 <template>
-  <div id="main">
-    <div id="main-container">
-      <div id="logoArea">
-        <img src="../Img/Logoditis.png" alt="Logo DITIS" />
-      </div>
-      <div id="titleArea">
-        <p>Entre com seu CPF e senha</p>
-      </div>
-      <form id="form" @submit.prevent="handleLogin">
+  <main>
+    <section class="login-container">
+      <img src="@/assets/Logoditis.png" alt="Logo DITIS" />
+
+      <p class="title">Entre com seu CPF e senha</p>
+
+      <form @submit.prevent="handleLogin">
         <input
           type="text"
           placeholder="Digite seu CPF"
@@ -17,6 +15,7 @@
           required
           aria-label="CPF"
         />
+        
         <input
           type="password"
           placeholder="Digite sua senha"
@@ -24,17 +23,20 @@
           required
           aria-label="Senha"
         />
+        
         <a href="forgot-password" class="forgot-password">Esqueceu sua senha?</a>
+        
         <button type="submit">Entrar</button>
       </form>
-      <div id="linkForm">
-        <a href="register" class="link">Não tem uma conta? Registre-se</a>
-      </div>
-    </div>
-    <footer id="footer">
-      <p>© 2024 by Nexgen Arch</p>
-    </footer>
-  </div>
+      
+      <p class="register">
+        Não tem uma conta?
+        <a href="/register" class="link">Registre-se</a>
+      </p>
+    </section>
+
+    <p class="copyright">© 2024 by Nexgen Arch</p>
+  </main>
 </template>
 
 <script>
@@ -48,6 +50,7 @@ export default {
       password: '',
     };
   },
+
   methods: {
     ...mapActions(['login']),
     async handleLogin() {
@@ -78,6 +81,7 @@ export default {
         toast.error("Login falhou. Verifique seu CPF e senha.", { autoClose: 5000 });
       }
     },
+
     formatCpf() {
       let cpf = this.cpf.replace(/\D/g, '');
 
@@ -93,145 +97,120 @@ export default {
 };
 </script>
 
-<style scoped>
-#main {
+<style lang="scss" scoped>
+main {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  height: 90vh;
-  margin: 0;
+  gap: 1.25rem;
+  height: 100vh;
 }
 
-#main-container {
-  width: 90%;
-  max-width: 400px;
-  padding: 30px;
-  background-color: rgba(255, 255, 255, 0.95);
+.login-container {
+  width: 25rem;
+  padding: 1.875rem;
+  background-color: var(--white);
   border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.3);
-  text-align: center;
-}
-
-#logoArea img {
-  width: 150px;
-  height: auto;
-  margin-bottom: 20px;
-}
-
-#titleArea p {
-  font-family: 'Poppins', sans-serif;
-  font-size: 14px;
-  color: #555;
-}
-
-#form {
+  box-shadow: var(--shadow-primary);
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 1rem;
+
+  > img {
+    width: 70%;
+  }
+
+  .title {
+    font-weight: 500;
+  }
 }
 
-#form input {
+form {
   width: 100%;
-  padding: 10px;
-  margin: 8px 0;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 14px;
-  font-family: 'Poppins', sans-serif;
-  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.05);
-}
-
-#form input:focus {
-  border-color: #28a745;
-  outline: none;
-}
-
-.forgot-password {
-  width: 100%;
-  font-family: 'Poppins', sans-serif;
-  font-size: 12px;
-  color: #555;
-  text-align: left;
-  margin-top: -5px;
-  margin-bottom: 15px;
-  cursor: pointer;
-  text-decoration: none;
-}
-
-#linkForm {
   display: flex;
-  justify-content: center;
-  margin-top: 15px;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+
+  input {
+    width: 100%;
+    padding: 0.675rem;
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    font-size: 0.875rem;
+    box-shadow: var(--shadow-secondary);
+    
+    &:focus {
+      border-color: var(--green-500);
+      outline: none;
+    }
+  }
+  
+  .forgot-password {
+    align-self: flex-start;
+    font-size: 0.75rem;
+    color: var(--gray-400);
+    text-decoration: none;
+  
+    &:hover {
+      color: var(--green-500);
+    }
+  }
+  
+  button[type="submit"] {
+    width: 100%;
+    padding: 0.675rem;
+    border: none;
+    border-radius: 8px;
+    background-color: var(--green-500);
+    color: var(--white);
+    font-size: 0.875rem;
+    transition: background-color 0.3s ease;
+    
+    &:hover {
+      background-color: var(--green-600);
+    }
+  }
 }
 
-#linkForm .link {
-  font-family: 'Poppins', sans-serif;
-  font-size: 12px;
-  color: #555;
-  text-decoration: none;
-  transition: color 0.3s ease;
+.register {
+  font-size: 0.875rem;
+
+  a {
+    text-decoration: none;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: var(--blue-400);
+    }
+  }
 }
 
-#linkForm .link:hover {
-  color: #0056b3;
-}
-
-#form button {
-  width: 100%;
-  padding: 10px;
-  border: none;
-  border-radius: 8px;
-  background-color: #28a745;
-  color: white;
-  font-size: 14px;
-  font-family: 'Poppins', sans-serif;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-#form button:hover {
-  background-color: #218838;
-}
-
-#footer {
-  margin-top: 20px;
-}
-
-#footer p {
-  font-family: 'Poppins', sans-serif;
-  font-size: 10px;
-  color: #aaa;
-  text-align: center;
+.copyright {
+  font-size: 0.625rem;
+  color: var(--gray-500);
 }
 
 @media (max-width: 480px) {
-  #main-container {
+  .login-container {
     width: 100%;
-    padding: 20px;
+    padding: 1.5rem;
     box-shadow: none;
     border-radius: 0;
+    
+    > img {
+      width: 140px;
+    }
   }
 
-  #logoArea img {
-    width: 120px;
-  }
-
-  #titleArea p {
-    font-size: 12px;
-  }
-
-  #form input, #form button {
-    font-size: 13px;
-    padding: 8px;
+  form {
+    gap: 1.5rem;
   }
 
   .forgot-password, #linkForm .link {
     font-size: 11px;
-  }
-
-  #footer p {
-    font-size: 9px;
   }
 }
 </style>

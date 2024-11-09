@@ -1,0 +1,7 @@
+p, a {
+ color: var(--gray-400);
+}
+
+p, input {
+  margin: 0 !important;
+}

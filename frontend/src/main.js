@@ -3,9 +3,13 @@ import App from './App.vue';
 import router from './router';
 import store from './store';
 import Toast from 'vue-toastification';
+import './styles/global.css'
+import './styles/variables.css'
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap";
+
+import './styles/reset.css'
 
 const app = createApp(App);
 
