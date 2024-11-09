@@ -1,19 +1,11 @@
 <template>
-  <div id="main">
-    <div id="main-container">
-      <!-- Logo do DITIS -->
-      <div id="logoArea">
-        <img src="../Img/Logoditis.png" alt="Logo DITIS" />
-      </div>
+  <main>
+    <section class="reset-password-container">
+      <img src="@/assets/Logoditis.png" alt="Logo DITIS" />
 
-      <!-- Título do formulário -->
-      <div id="titleArea">
-        <p>Redefina sua senha preenchendo os campos abaixo</p>
-      </div>
+      <p>Redefina sua senha preenchendo os campos abaixo</p>
 
-      <!-- Formulário de Reset de Senha -->
-      <form id="form" @submit.prevent="handleResetPassword">
-        <!-- Campo para Nova Senha -->
+      <form @submit.prevent="handleResetPassword">
         <input
           type="password"
           placeholder="Nova senha"
@@ -21,8 +13,7 @@
           required
           aria-label="Nova senha"
         />
-   
-        <!-- Campo para Confirmar Nova Senha -->
+
         <input
           type="password"
           placeholder="Confirmar nova senha"
@@ -30,34 +21,33 @@
           required
           aria-label="Confirmar nova senha"
         />
-   
-        <!-- Mensagem de erro de senhas não coincidentes -->
-        <p v-if="form.password && form.password_confirmation && form.password !== form.password_confirmation" class="error-message">
+
+        <p
+          v-if="!isPasswordEquals"
+          class="error-message"
+        >
           As senhas não coincidem.
         </p>
 
-        <!-- Botão de Envio -->
-        <button type="submit" :disabled="isSubmitting || form.password !== form.password_confirmation">
+        <button type="submit" :disabled="isSubmitButtonDisabled">
           {{ isSubmitting ? 'Redefinindo...' : 'Redefinir Senha' }}
         </button>
       </form>
    
-      <!-- Link de login -->
-      <div id="linkForm">
-        <a href="login" class="link">Já tem uma conta? Faça login.</a>
-      </div>
-    </div>
- 
-    <!-- Footer -->
-    <footer id="footer">
-      <p>© 2024 by Nexgen Arch</p>
-    </footer>
-  </div>
+      <p class="login">
+        Já tem uma conta? 
+        <a href="/login">Faça login</a>
+      </p>
+    </section>
+    
+    <p class="copyright">© 2024 by Nexgen Arch</p>
+  </main>
 </template>
 
 <script>
 import { mapState } from 'vuex';
-import { useToast } from 'vue-toastification';
+import { toast } from 'vue-toastification';
+import { apiResetPassword } from '@/http';
 
 export default {
   data() {
@@ -71,40 +61,42 @@ export default {
   },
   computed: {
     ...mapState(['token', 'email']),
+    isPasswordEquals() {
+      return (
+        this.form.password &&
+        this.form.password_confirmation &&
+        this.form.password === this.form.password_confirmation
+      )
+    },
+    isSubmitButtonDisabled() {
+      return (
+        this.isSubmitting ||
+        this.form.password !== this.form.password_confirmation
+      )
+    }
   },
   methods: {
     async handleResetPassword() {
-      const toast = useToast(); 
 
-      if (this.form.password === this.form.password_confirmation) {
-        try {
-          this.isSubmitting = true;
-          const response = await fetch('http://localhost:8000/api/reset-password', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              email: this.email,
-              password: this.form.password,
-              token: this.token,
-            }),
-          });
+      if (!this.isPasswordEquals) {
+        toast.error('As senhas não coincidem.', { autoClose: 2000 });
+        return;
+      }
 
-          if (response.ok) {
-            toast.success('Senha redefinida com sucesso.');
-            this.$router.push('/login');
-          } else {
-            toast.error('Ocorreu um erro ao redefinir a senha.');
-          }
-        } catch (error) {
-          console.error('Erro ao redefinir a senha:', error);
-          toast.error('Ocorreu um erro ao redefinir a senha.');
-        } finally {
-          this.isSubmitting = false;
-        }
-      } else {
-        toast.error('As senhas não coincidem.');
+      try {
+        this.isSubmitting = true;
+        
+        await apiResetPassword({
+          password: this.form.password,
+          password_confirmation: this.form.password_confirmation
+        })
+
+        toast.success('Senha redefinida com sucesso.', { autoClose: 5000 });
+        this.$router.push('/login');
+      } catch (error) {
+        toast.error('Ocorreu um erro ao redefinir a senha.');
+      } finally {
+        this.isSubmitting = false;
       }
     },
   },
