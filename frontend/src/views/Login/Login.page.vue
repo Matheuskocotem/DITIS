@@ -10,7 +10,7 @@
           type="text"
           placeholder="Digite seu CPF"
           v-model="cpf"
-          @input="formatCpf"
+          @input="handleCpfInput"
           maxlength="14"
           required
           aria-label="CPF"
@@ -42,6 +42,7 @@
 <script>
 import { mapActions } from 'vuex';
 import { toast } from 'vue3-toastify';
+import { formatCpf } from '@/utils/format-cpf';
 
 export default {
   data() {
@@ -52,47 +53,32 @@ export default {
   },
 
   methods: {
-    ...mapActions(['login']),
+    ...mapActions('auth', ['authenticateUser']),
     async handleLogin() {
       try {
-        const response = await this.$store.dispatch('login', {
+        const role = await this.authenticateUser({
           cpf: this.cpf,
           password: this.password,
         });
-
-        console.log("Dados do usuário:", response);
-
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('role', response.role);
+        
+        const mapRoleScopes = {
+          admin: 'admindash',
+          user: 'VizualiazarReunioes'
+        }
+        
         toast.success("Login realizado com sucesso!", { autoClose: 5000 });
 
-        if (response.role) {
-          if (response.role === 'admin') {
-            this.$router.push({ name: 'admindash' });
-          } else {
-            this.$router.push({ name: 'VizualiazarReunioes' });
-          }
-        } else {
-          console.error("Papel do usuário não encontrado");
-          toast.error("Papel do usuário não encontrado. Tente novamente.", { autoClose: 5000 });
+        if (role) {
+          this.$router.push({ name: mapRoleScopes[role] })
         }
       } catch (error) {
-        console.error("Erro ao fazer login:", error.response ? error.response.data : error.message);
-        toast.error("Login falhou. Verifique seu CPF e senha.", { autoClose: 5000 });
+        toast.error("Falha no login. Verifique os dados e tente novamente.", { autoClose: 5000 });
       }
     },
 
-    formatCpf() {
-      let cpf = this.cpf.replace(/\D/g, '');
-
-      if (cpf.length <= 11) {
-        cpf = cpf.replace(/(\d{3})(\d)/, "$1.$2");
-        cpf = cpf.replace(/(\d{3})(\d)/, "$1.$2");
-        cpf = cpf.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
-      }
-
-      this.cpf = cpf;
-    },
+    handleCpfInput() {
+      this.cpf = formatCpf(this.cpf)
+    }
   },
 };
 </script>

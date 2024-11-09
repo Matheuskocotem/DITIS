@@ -29,7 +29,7 @@
   import RoomList from '../components/RoomList.vue';
   import ReservationModal from '../components/ReservationModalSalas.vue';
   import SideBar from '../components/Sidebar.vue';
-  import api from '../services/HttpService.js';
+  import api from '../lib/axios.js';
 
   const rooms = ref([]);
   const filteredRooms = computed(() => rooms.value);
