@@ -31,7 +31,7 @@
       
       <p class="register">
         Não tem uma conta?
-        <a href="/register" class="link">Registre-se</a>
+        <a href="/register">Registre-se</a>
       </p>
     </section>
 
@@ -195,7 +195,7 @@ form {
     gap: 1.5rem;
   }
 
-  .forgot-password, #linkForm .link {
+  .forgot-password {
     font-size: 11px;
   }
 }
