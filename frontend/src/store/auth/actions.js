@@ -4,7 +4,7 @@ export const actions = {
   async authenticateUser({ }, { cpf, password }) {   
     try {
       const { token, role } = await apiLogin({ 
-        cpf: cpf,
+        cpf: cpf.replace(/\D/g, ''),
         password
       });
 

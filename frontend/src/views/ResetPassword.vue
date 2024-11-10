@@ -23,7 +23,7 @@
         />
 
         <p
-          v-if="!isPasswordEquals"
+          v-if="!isPasswordEquals && !isPasswordFieldsEmpty"
           class="error-message"
         >
           As senhas não coincidem.
@@ -45,51 +45,58 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
-import { toast } from 'vue-toastification';
+import { toast } from 'vue3-toastify';
 import { apiResetPassword } from '@/http';
 
 export default {
   data() {
     return {
       form: {
+        email: '',
+        token: '',
         password: '',
         password_confirmation: '',
       },
       isSubmitting: false,
     };
   },
+
+  mounted() {
+    const token = this.$route.params.token;
+    const email = this.$route.params.email;
+    if (token && email) {
+      this.form.email = email;
+      this.form.password = password;
+    }
+  },
+
   computed: {
-    ...mapState(['token', 'email']),
+    isPasswordFieldsEmpty() {
+      return (
+        this.form.password.length === 0 ||
+        this.form.password_confirmation.length === 0
+      )
+    },
     isPasswordEquals() {
       return (
-        this.form.password &&
-        this.form.password_confirmation &&
         this.form.password === this.form.password_confirmation
       )
     },
     isSubmitButtonDisabled() {
       return (
+        this.isPasswordFieldsEmpty ||
         this.isSubmitting ||
-        this.form.password !== this.form.password_confirmation
+        !this.isPasswordEquals
       )
     }
   },
+
   methods: {
     async handleResetPassword() {
-
-      if (!this.isPasswordEquals) {
-        toast.error('As senhas não coincidem.', { autoClose: 2000 });
-        return;
-      }
-
       try {
         this.isSubmitting = true;
         
-        await apiResetPassword({
-          password: this.form.password,
-          password_confirmation: this.form.password_confirmation
-        })
+        await apiResetPassword({ ...this.form })
 
         toast.success('Senha redefinida com sucesso.', { autoClose: 5000 });
         this.$router.push('/login');
@@ -100,175 +107,123 @@ export default {
       }
     },
   },
-  created() {
-    const token = this.$route.query.token;
-    const email = this.$route.query.email;
-    if (token && email) {
-      this.$store.dispatch('setResetPasswordData', { token, email });
-    }
-  },
 };
 </script>
 
 
-<style scoped>
-  #main {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    height: 100vh;
-    padding: 10px;
-    margin: 0;
-  }
-  
-  #main-container {
-    width: 100%;
-    max-width: 400px;
-    padding: 30px;
-    background-color: rgba(255, 255, 255, 0.95);
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.3);
-    text-align: center;
-  }
-  
-  #logoArea img {
-    width: 150px;
-    height: auto;
-    margin-bottom: 20px;
-  }
-  
-  #titleArea p {
-    font-family: 'Poppins', sans-serif;
-    font-size: 16px;
-    color: #555;
-  }
-  
-  #form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  #form input {
-    width: 100%;
-    padding: 10px;
-    margin: 8px 0;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 14px;
-    font-family: 'Poppins', sans-serif;
-    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.05);
-  }
-  
-  #form input:focus {
-    border-color: #28a745;
-    outline: none;
+<style lang="scss" scoped>
+main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 1.25rem;
+  height: 100vh;
+}
+
+.reset-password-container {
+  width: 25rem;
+  padding: 1.875rem;
+  background-color: var(--white);
+  border-radius: 15px;
+  box-shadow: var(--shadow-primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+
+  > img {
+    width: 70%;
   }
 
+  .title {
+    font-weight: 500;
+  }
+}
+
+form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+
+  input {
+    width: 100%;
+    padding: 0.675rem;
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    font-size: 0.875rem;
+    box-shadow: var(--shadow-secondary);
+    
+    &:focus {
+      border-color: var(--green-500);
+      outline: none;
+    }
+  }
+  
   .error-message {
-    color: red;
-    font-size: 12px;
-    margin-top: 5px;
+    color: var(--red-400);
+    font-size: 0.75rem;
   }
   
-  #linkForm {
-    display: flex;
-    justify-content: center;
+  button[type="submit"] {
     width: 100%;
-    margin: 10px 0;
-  }
-  
-  #linkForm .link {
-    font-family: 'Poppins', sans-serif;
-    font-size: 12px;
-    color: #555;
-    text-decoration: none;
-    transition: color 0.3s ease;
-  }
-  
-  #linkForm .link:hover {
-    color: #0056b3;
-  }
-  
-  #form button {
-    width: 100%;
-    padding: 10px;
+    padding: 0.675rem;
     border: none;
     border-radius: 8px;
-    background-color: #28a745;
-    color: white;
-    font-size: 14px;
-    font-family: 'Poppins', sans-serif;
-    cursor: pointer;
+    background-color: var(--green-500);
+    color: var(--white);
+    font-size: 0.875rem;
     transition: background-color 0.3s ease;
-    margin-top: 15px;
+    
+    &:not(:disabled):hover {
+      background-color: var(--green-600);
+    }
+
+    &:disabled {
+      opacity: 70%;
+      cursor: not-allowed;
+    }
   }
-  
-  #form button:hover {
-    background-color: #218838;
+}
+
+.login {
+  font-size: 0.875rem;
+
+  a {
+    text-decoration: none;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: var(--blue-400);
+    }
+  }
+}
+
+.copyright {
+  font-size: 0.625rem;
+  color: var(--gray-500);
+}
+
+@media (max-width: 480px) {
+  .reset-password-container {
+    width: 100%;
+    padding: 1.5rem;
+    box-shadow: none;
+    border-radius: 0;
+    
+    > img {
+      width: 140px;
+    }
   }
 
-  #form button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
+  form {
+    gap: 1.5rem;
   }
-  
-  #footer {
-    margin-top: 20px;
+
+  .forgot-password {
+    font-size: 11px;
   }
-  
-  #footer p {
-    font-family: 'Poppins', sans-serif;
-    font-size: 10px;
-    color: #aaa;
-    text-align: center;
-  }
-  
-  /* Responsividade para telas menores */
-  @media (max-width: 768px) {
-    #main-container {
-      padding: 20px;
-      width: 90%;
-    }
-  
-    #titleArea p {
-      font-size: 14px;
-    }
-  
-    #form input {
-      font-size: 13px;
-    }
-  
-    #form button {
-      font-size: 13px;
-      padding: 8px;
-    }
-  
-    #footer p {
-      font-size: 9px;
-    }
-  }
-  
-  @media (max-width: 480px) {
-    #main-container {
-      padding: 15px;
-    }
-  
-    #logoArea img {
-      width: 120px;
-    }
-  
-    #titleArea p {
-      font-size: 12px;
-    }
-  
-    #form input, #form button {
-      font-size: 12px;
-    }
-  
-    #footer p {
-      font-size: 8px;
-    }
-  }
+}
 </style>

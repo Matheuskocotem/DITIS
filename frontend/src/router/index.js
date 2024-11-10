@@ -2,6 +2,15 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 const routes = [
   {
+    path: '/resetPassword/:token',
+    name: 'resetPassword',
+    component: () => import('../views/ResetPassword.vue'),
+    // props: route => ({
+    //   token: route.params.token,
+    //   email: route.params.email
+    // }),
+  },
+  {
     path: '/login',
     name: 'login',
     component: () => import('../views/Login/Login.page.vue'),
@@ -9,16 +18,6 @@ const routes = [
       title: 'login',
     },
   },
-  {
-    path: '/resetPassword/:token',
-    name: 'resetPassword',
-    component: () => import('../views/ResetPassword.vue'),
-    props: route => ({
-      token: route.query.token,
-      email: route.query.email
-    }),
-  },
-
   {
     path: '/forgot-password',
     name: 'forgot-password',
@@ -64,16 +63,6 @@ const routes = [
       title: 'VizualiazarReunioes',
       requiresAuth: true,
       role: 'user',
-    },
-  },
-  {
-    path: '/admin',
-    name: 'admin',
-    component: () => import('../views/AdminDashboard.vue'),
-    meta: {
-      title: 'admin',
-      requiresAuth: true,
-      role: 'admin',
     },
   },
   {
