@@ -17,7 +17,8 @@ export const actions = {
     }
   },
   
-  logout({ commit }) {
-    commit('clearAuth');
+  logout({ }) {
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
   },
 }

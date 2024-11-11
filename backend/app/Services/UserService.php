@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use App\Models\User;
-use App\Repositories\UserRepository;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Hash;
+use App\Repositories\UserRepository;
 use Illuminate\Validation\ValidationException;
 
 class UserService
@@ -92,5 +92,25 @@ class UserService
             'salasDisponiveis' => \App\Models\MeetingRoom::count(),
             'totalUsuarios' => $this->userRepository->countUsers(),
         ];
+    }
+
+
+    public function sendResetLink($email)
+    {
+        return Password::sendResetLink(['email' => $email]);
+    }
+
+    public function resetPassword($email, $token, $password)
+    {
+        $user = $this->userRepository->findByEmail($email);
+
+        if (!$user) {
+            return response()->json(['message' => 'Usuário não encontrado.'], 404);
+        }
+
+
+        $this->userRepository->updatePassword($user, $password);
+
+        return response()->json(['message' => 'Senha atualizada com sucesso.']);
     }
 }

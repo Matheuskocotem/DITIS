@@ -35,9 +35,19 @@ class MeetingRoomController extends Controller
 
     public function store(Request $request)
     {
-        $room = $this->service->createRoom($request);
-        return response()->json($room, Response::HTTP_CREATED);
+        try {
+            $room = $this->service->createRoom($request);
+            return response()->json($room, Response::HTTP_CREATED);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'message' => 'Validação falhou',
+                'errors' => $e->errors(),
+            ], Response::HTTP_BAD_REQUEST);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
+    
 
     public function show($id)
     {

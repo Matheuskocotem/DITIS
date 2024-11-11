@@ -15,6 +15,12 @@ class MeetingService
         $this->meetingRepository = $meetingRepository;
     }
 
+    public function getMeetingById($id)
+    {
+        return $this->meetingRepository->findMeetingById($id);
+    }
+
+
     public function getAllMeetings()
     {
         return $this->meetingRepository->getAllMeetings();
@@ -22,24 +28,61 @@ class MeetingService
 
     public function getMeetingsByDate($date)
     {
-        $validatedDate = Carbon::createFromFormat('Y-m-d', $date);
+        $validatedDate = Carbon::parse($date);
         return $this->meetingRepository->getMeetingsByDate($validatedDate);
+    }
+
+    public function getRoomOccupancy($date)
+    {
+        $date = Carbon::parse($date)->format('Y-m-d');
+        
+        $occupancyByRoom = $this->meetingRepository->getRoomOccupancyByDate($date);
+
+        $occupancyData = [];
+
+        foreach ($occupancyByRoom as $meeting) {
+            $startTime = Carbon::parse($meeting->start_time);
+            $endTime = Carbon::parse($meeting->end_time);
+            $duration = $endTime->diffInHours($startTime);
+
+            if (isset($occupancyData[$meeting->room_id])) {
+                $occupancyData[$meeting->room_id]['hours'] += $duration;
+                $occupancyData[$meeting->room_id]['reservations_count'] += 1;
+            } else {
+                $occupancyData[$meeting->room_id] = [
+                    'room_id' => $meeting->room_id,
+                    'hours' => $duration,
+                    'reservations_count' => 1,
+                ];
+            }
+        }
+
+        return $occupancyData;
+    }
+
+    public function getReservationsCount($date)
+    {
+        return $this->meetingRepository->countReservationsByDate($date);
     }
 
     public function createMeeting(array $data)
     {
-        $startTime = Carbon::parse($data['start_time']);
-        $endTime = Carbon::parse($data['end_time']);
+        $startTime = Carbon::createFromFormat('Y-m-d H:i', $data['date'] . ' ' . $data['start_time'])->setTimezone('America/Sao_Paulo');
+        $endTime = Carbon::createFromFormat('Y-m-d H:i', $data['date'] . ' ' . $data['end_time'])->setTimezone('America/Sao_Paulo');
 
-        if ($this->isOutsideWorkHours($startTime)) {
-            throw new \Exception('Não é possível agendar reuniões fora do horário de trabalho.');
-        }
+        $data['date'] = $startTime->format('Y-m-d');
 
         if ($this->meetingRepository->hasTimeConflict($data['room_id'], $startTime, $endTime)) {
             throw new \Exception('Conflito de horário com outra reunião.');
         }
 
+        $room = $this->meetingRepository->findRoomById($data['room_id']);
+        if (!$room) {
+            throw new \Exception('Sala não encontrada.');
+        }
+
         $data['user_id'] = Auth::id();
+
         return $this->meetingRepository->createMeeting($data);
     }
 
@@ -47,12 +90,12 @@ class MeetingService
     {
         $meeting = $this->meetingRepository->findMeetingById($id);
 
-        $startTime = Carbon::parse($data['start_time']);
-        $endTime = Carbon::parse($data['end_time']);
-
-        if ($this->isOutsideWorkHours($startTime)) {
-            throw new \Exception('Não é possível agendar reuniões fora do horário de trabalho.');
+        if (!$meeting) {
+            throw new \Exception('Reunião não encontrada.');
         }
+
+        $startTime = Carbon::createFromFormat('Y-m-d H:i', $data['date'] . ' ' . $data['start_time'])->setTimezone('America/Sao_Paulo');
+        $endTime = Carbon::createFromFormat('Y-m-d H:i', $data['date'] . ' ' . $data['end_time'])->setTimezone('America/Sao_Paulo');
 
         if ($this->meetingRepository->hasTimeConflict($data['room_id'], $startTime, $endTime)) {
             throw new \Exception('Conflito de horário com outra reunião.');
@@ -61,16 +104,20 @@ class MeetingService
         return $this->meetingRepository->updateMeeting($meeting, $data);
     }
 
+    public function updateMeetingStatus($id, string $status)
+    {
+        $meeting = $this->meetingRepository->findMeetingById($id);
+
+        if (!$meeting) {
+            throw new \Exception('Reunião não encontrada.');
+        }
+
+        return $this->meetingRepository->updateMeetingStatus($meeting, $status);
+    }
+
     public function deleteMeeting($id)
     {
         $meeting = $this->meetingRepository->findMeetingById($id);
         return $this->meetingRepository->deleteMeeting($meeting);
-    }
-
-    private function isOutsideWorkHours(Carbon $startTime)
-    {
-        return $startTime->isBefore(Carbon::createFromTime(8, 0)) ||
-            ($startTime->between(Carbon::createFromTime(11, 30), Carbon::createFromTime(13, 0))) ||
-            $startTime->isAfter(Carbon::createFromTime(17, 0));
     }
 }

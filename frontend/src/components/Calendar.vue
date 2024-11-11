@@ -18,6 +18,7 @@ import {
 } from '@schedule-x/calendar'
 import '@schedule-x/theme-default/dist/index.css'
 import axios from 'axios'
+import { apiGetAllMeetings } from '@/http'
 
 const today = new Date().toISOString().split('T')[0]
 
@@ -37,7 +38,7 @@ const calendarApp = createCalendar({
 
 const fetchMeetings = async () => {
   try {
-    const response = await axios.get('http://localhost:8000/api/meetings') 
+    const response = await apiGetAllMeetings()
     console.log('Reuniões recebidas:', response.data)
     if (response.data && Array.isArray(response.data)) {
       events.value = response.data.map(meeting => ({

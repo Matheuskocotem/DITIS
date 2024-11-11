@@ -41,4 +41,15 @@ class UserRepository
     {
         return User::count();
     }
+
+    public function findByEmail($email)
+    {
+        return User::where('email', $email)->first();
+    }
+
+    public function updatePassword(User $user, $password)
+    {
+        $user->password = bcrypt($password); 
+        $user->save();
+    }
 }

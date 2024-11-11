@@ -5,10 +5,10 @@ const routes = [
     path: '/resetPassword/:token',
     name: 'resetPassword',
     component: () => import('../views/ResetPassword.vue'),
-    // props: route => ({
-    //   token: route.params.token,
-    //   email: route.params.email
-    // }),
+    props: route => ({
+      token: route.params.token,
+      email: route.params.email
+    }),
   },
   {
     path: '/login',
@@ -46,16 +46,6 @@ const routes = [
     },
   },
   {
-    path: '/',
-    name: 'VizualiazarReunioes',
-    component: () => import('../views/reunioes.vue'),
-    meta: {
-      title: 'calendario',
-      requiresAuth: true,
-      role: 'user',
-    },
-  },
-  {
     path: '/reunioes',
     name: 'Reunioes',
     component: () => import('../views/VizualiazarReunioes.vue'),
@@ -78,7 +68,7 @@ const routes = [
   {
     path: '/roomsAdmin',
     name: 'roomsAdmin',
-    component: () => import('../views/Rooms.vue'),
+    component: () => import('../views/admin/Rooms.vue'),
     meta: {
       title: 'roomsAdmin',
       requiresAuth: true,
@@ -113,6 +103,16 @@ const routes = [
       title: 'Acesso Negado',
     },
   },
+  {
+    path: '/',
+    name: 'VizualiazarReunioes',
+    component: () => import('../views/reunioes.vue'),
+    meta: {
+      title: 'calendario',
+      requiresAuth: true,
+      role: 'user',
+    },
+  }
 ];
 
 const router = createRouter({

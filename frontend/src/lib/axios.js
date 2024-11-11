@@ -27,7 +27,13 @@ api.interceptors.response.use(
   (response) => {
     return response
   },
-  (error) => {
+  (error) => {  
+    if (error.response.data.message === 'Unauthenticated.') {
+      router.replace({ name: 'login' });
+      localStorage.removeItem('token');
+      localStorage.removeItem('role');
+    }
+
     return Promise.reject(error)
   },
 )

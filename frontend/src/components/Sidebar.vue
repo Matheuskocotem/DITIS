@@ -1,7 +1,7 @@
 <template>
   <aside class="sidebar">
     <div class="logo">
-      <img alt="Logo" src="../Img/Logoditis.png" width="40" height="40" />
+      <img alt="Logo" src="@/assets/Logoditis.png" width="40" height="40" />
     </div>
     <nav>
       <RouterLink to="/" class="nav-item">

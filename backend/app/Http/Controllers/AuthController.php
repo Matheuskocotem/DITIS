@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\UserService;
+use Illuminate\Support\Facades\Password;
 
 class AuthController extends Controller
 {
@@ -97,5 +98,30 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         return response()->json($this->userService->logoutUser($request->user()));
+    }
+
+
+
+    public function forgotPassword(Request $request)
+    {
+        $request->validate(['email' => 'required|email']);
+
+        $status = $this->userService->sendResetLink($request->email);
+
+        return $status === Password::RESET_LINK_SENT
+            ? response()->json(['message' => __($status)])
+            : response()->json(['message' => __($status)], 400);
+    }
+
+    // Método para redefinir a senha do usuário
+    public function reset(Request $request)
+    {
+        $request->validate([
+            'token' => 'required|string',
+            'email' => 'required|email',
+            'password' => 'required|string|confirmed',
+        ]);
+
+        return $this->userService->resetPassword($request->email, $request->token, $request->password);
     }
 }

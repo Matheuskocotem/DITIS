@@ -48,7 +48,7 @@ class MeetingRoomRepository
 
         foreach ($meetingRooms as $room) {
             $totalHours = Meeting::where('meeting_room_id', $room->id)
-                ->sum('duration'); // 'duration' representa a duração da reunião em horas
+                ->sum('duration'); 
             $occupancies[] = [
                 'room' => $room->name,
                 'hours' => $totalHours,

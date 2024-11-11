@@ -15,10 +15,8 @@ return new class extends Migration {
             $table->string('nome');
             $table->string('localizacao');
             $table->integer('capacidade');
-            $table->text('recursos')->nullable();
+            $table->json('recursos')->nullable();
             $table->boolean('ativo')->default(true);
-            $table->json('disponibilidade')->nullable();
-            $table->string('imagem')->nullable();
             $table->text('descricao')->nullable();
             $table->timestamps();
         });

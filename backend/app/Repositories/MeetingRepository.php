@@ -14,7 +14,21 @@ class MeetingRepository
 
     public function getMeetingsByDate(Carbon $date)
     {
-        return Meeting::whereDate('meeting_date', $date)->get();
+        return Meeting::whereDate('date', $date->format('Y-m-d'))->get();
+    }
+
+    public function getRoomOccupancyByDate($date)
+    {
+        return Meeting::whereDate('date', $date)
+            ->where('status', 'confirmed')
+            ->get();
+    }
+
+    public function countReservationsByDate($date)
+    {
+        return Meeting::whereDate('date', $date)
+            ->where('status', 'confirmed')
+            ->count();
     }
 
     public function createMeeting(array $data)
@@ -22,9 +36,14 @@ class MeetingRepository
         return Meeting::create($data);
     }
 
+    public function findRoomById($roomId)
+    {
+        return \App\Models\MeetingRoom::findOrFail($roomId);
+    }
+
     public function findMeetingById($id)
     {
-        return Meeting::with('user', 'room')->findOrFail($id);
+        return Meeting::findOrFail($id);
     }
 
     public function updateMeeting(Meeting $meeting, array $data)
@@ -38,17 +57,35 @@ class MeetingRepository
         return $meeting->delete();
     }
 
-    public function hasTimeConflict($meetingRoomId, Carbon $startTime, Carbon $endTime)
+    public function hasTimeConflict($roomId, $startTime, $endTime)
     {
-        return Meeting::where('room_id', $meetingRoomId)
+        \Log::info("Verificando conflito para Sala ID: $roomId, Início: $startTime, Fim: $endTime");
+
+        $conflict = Meeting::where('room_id', $roomId)
+            ->where('status', 'confirmed')
             ->where(function ($query) use ($startTime, $endTime) {
-                $query->whereBetween('start_time', [$startTime, $endTime])
-                    ->orWhereBetween('end_time', [$startTime, $endTime])
-                    ->orWhere(function ($query) use ($startTime, $endTime) {
-                        $query->where('start_time', '<=', $startTime)
-                            ->where('end_time', '>=', $endTime);
-                    });
+                $query->where(function ($query) use ($startTime, $endTime) {
+                    $query->where('start_time', '<', $endTime)
+                        ->where('end_time', '>', $startTime);
+                });
             })
             ->exists();
+
+        \Log::info("Conflito encontrado: " . ($conflict ? 'Sim' : 'Não'));
+
+        return $conflict;
+    }
+
+
+    public function updateMeetingStatus(Meeting $meeting, string $status)
+    {
+        if (!in_array($status, ['confirmed', 'canceled'])) {
+            throw new \Exception('Status inválido.');
+        }
+
+        $meeting->status = $status;
+        $meeting->save();
+
+        return $meeting;
     }
 }

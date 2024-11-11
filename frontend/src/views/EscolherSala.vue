@@ -29,7 +29,8 @@
   import RoomList from '../components/RoomList.vue';
   import ReservationModal from '../components/ReservationModalSalas.vue';
   import SideBar from '../components/Sidebar.vue';
-  import api from '../lib/axios.js';
+  import { api } from '../lib/axios.js';
+import { apiGetMeetingRooms } from '@/http';
 
   const rooms = ref([]);
   const filteredRooms = computed(() => rooms.value);
@@ -54,8 +55,8 @@
     }
     
     try {
-      const response = await api.get('http://localhost:8000/api/meeting-rooms/');
-      rooms.value = response.data; // Atribuir resposta ao array rooms
+      const data = await apiGetMeetingRooms();
+      rooms.value = data; // Atribuir resposta ao array rooms
     } catch (error) {
       console.error('Erro ao buscar salas:', error.response?.data || error.message);
     }
