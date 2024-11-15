@@ -10,6 +10,7 @@ import { apiGetAllMeetings } from './get-all-meetings'
 import { apiCreateMeeting } from './create-meeting'
 import { apiUpdateMeeting } from './update-meeting'
 import { apiLogout } from './logout'
+import { apiUpdateStatus } from './update-status'
 
 export {
   apiLogin,
@@ -23,5 +24,6 @@ export {
   apiGetAllMeetings,
   apiCreateMeeting,
   apiUpdateMeeting,
-  apiLogout
+  apiLogout,
+  apiUpdateStatus
 }

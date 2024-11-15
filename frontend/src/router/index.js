@@ -4,7 +4,7 @@ const routes = [
   {
     path: '/resetPassword/:token',
     name: 'resetPassword',
-    component: () => import('../views/ResetPassword.vue'),
+    component: () => import('../views/auth/ResetPassword.vue'),
     props: route => ({
       token: route.params.token,
       email: route.params.email
@@ -13,7 +13,7 @@ const routes = [
   {
     path: '/login',
     name: 'login',
-    component: () => import('../views/Login/Login.page.vue'),
+    component: () => import('../views/auth/Login.vue'),
     meta: {
       title: 'login',
     },
@@ -21,7 +21,7 @@ const routes = [
   {
     path: '/forgot-password',
     name: 'forgot-password',
-    component: () => import('../views/ForgotPassword.vue'),
+    component: () => import('../views/auth/ForgotPassword.vue'),
     meta: {
       title: 'esqueci minha senha',
     },
@@ -30,7 +30,7 @@ const routes = [
   {
     path: '/register',
     name: 'register',
-    component: () => import('../views/Register.vue'),
+    component: () => import('../views/auth/Register.vue'),
     meta: {
       title: 'register',
     },
@@ -48,7 +48,7 @@ const routes = [
   {
     path: '/reunioes',
     name: 'Reunioes',
-    component: () => import('../views/VizualiazarReunioes.vue'),
+    component: () => import('../views/user/Meetings.vue'),
     meta: {
       title: 'VizualiazarReunioes',
       requiresAuth: true,

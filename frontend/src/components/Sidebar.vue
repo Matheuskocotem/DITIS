@@ -23,7 +23,6 @@
         <span>Perfil</span>
       </button>
       <div v-if="showProfileMenu" class="profile-menu">
-        <RouterLink to="/perfil" class="menu-item">Editar Perfil</RouterLink>
         <button @click="logout" class="menu-item logout">
           <LogOut class="icon" />
           <span>Sair</span>
@@ -37,8 +36,8 @@
 import { ref } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import { UserCircle, LogOut, Calendar, Home, Users } from 'lucide-vue-next'
-import axios from 'axios'
 import { toast } from 'vue3-toastify'
+import { apiLogout } from '@/http';
 
 const showProfileMenu = ref(false)
 const router = useRouter() 
