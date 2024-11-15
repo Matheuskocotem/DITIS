@@ -78,7 +78,7 @@ const routes = [
   {
     path: '/meetingsadmin',
     name: 'meetingsadmin',
-    component: () => import('../views/Meetings.vue'),
+    component: () => import('../views/admin/Meetings.vue'),
     meta: {
       title: 'meetingsAdmin',
       requiresAuth: true,

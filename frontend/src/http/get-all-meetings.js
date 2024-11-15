@@ -1,7 +1,7 @@
 import { api } from "@/lib/axios";
 
-export function apiGetAllMeetings() {
-  const response = api.get('/meetings');
+export async function apiGetAllMeetings() {
+  const response = await api.get('/meetings');
 
   return response.data
 }

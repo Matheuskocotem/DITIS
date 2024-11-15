@@ -2,20 +2,24 @@ import { apiLogin } from './login'
 import { apiRegister } from './register'
 import { apiForgotPassword } from './forgot-password'
 import { apiResetPassword } from './reset-password'
-import { apiGetAllMeetings } from './get-all-meetings'
 import { apiGetMeetingRooms } from './get-meeting-rooms'
 import { apiAddRoom } from './add-room'
 import { apiUpdateRoom } from './update-room'
 import { apiDeleteRoom } from './delete-room'
+import { apiGetAllMeetings } from './get-all-meetings'
+import { apiCreateMeeting } from './create-meeting'
+import { apiUpdateMeeting } from './update-meeting'
 
 export {
   apiLogin,
   apiRegister,
   apiForgotPassword,
   apiResetPassword,
-  apiGetAllMeetings,
   apiGetMeetingRooms,
   apiAddRoom,
   apiUpdateRoom,
-  apiDeleteRoom
+  apiDeleteRoom,
+  apiGetAllMeetings,
+  apiCreateMeeting,
+  apiUpdateMeeting
 }

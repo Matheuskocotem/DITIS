@@ -3,7 +3,7 @@
     <AdminSidebar />
 
     <h2>Próximas Reuniões</h2>
-    <button class="btn btn-primary" @click="showAddMeetingModal = true">
+    <button class="btn btn-primary" @click="openModal('add')">
       Adicionar Nova Reunião
     </button>
     <table class="meetings-table">
@@ -23,18 +23,16 @@
           <td>{{ meeting.time }}</td>
           <td>{{ meeting.organizer }}</td>
           <td>
-            <button class="btn btn-edit" @click="editMeeting(meeting)">Editar</button>
+            <button class="btn btn-edit" @click="openModal('edit', meeting)">Editar</button>
             <button class="btn btn-delete" @click="deleteMeeting(meeting.id)">Cancelar</button>
           </td>
         </tr>
       </tbody>
     </table>
 
-    <!-- Modal diretamente na tela -->
-    <div v-if="showAddMeetingModal" class="modal-overlay" @click.self="showAddMeetingModal = false">
-      <div class="modal-content">
-        <h2>Adicionar Nova Reunião</h2>
-        <form @submit.prevent="addMeeting">
+    <Modal :show-modal="showModal" @close="closeModal" title="Adicionar Nova Reunião">
+      <template #modal-body>
+        <form @submit.prevent="handleSubmit" id="addMeeting">
           <div class="form-group">
             <label for="meetingRoom">Sala:</label>
             <input type="number" id="meetingRoom" v-model="newMeeting.room_id" required class="form-input">
@@ -57,38 +55,52 @@
           </div>
           <div class="form-group">
             <label for="meetingStartTime">Horário de Início:</label>
-            <input type="time" id="meetingStartTime" v-model="newMeeting.start_time" required class="form-input">
+            <input id="meetingStartTime" v-model="newMeeting.start_time" required class="form-input">
           </div>
           <div class="form-group">
             <label for="meetingEndTime">Horário de Término:</label>
-            <input type="time" id="meetingEndTime" v-model="newMeeting.end_time" required class="form-input">
+            <input id="meetingEndTime" v-model="newMeeting.end_time" required class="form-input">
           </div>
           <div class="form-group">
             <label for="meetingStatus">Status:</label>
             <select id="meetingStatus" v-model="newMeeting.status" required class="form-input">
-              <option value="0">Pendente</option>
-              <option value="1">Confirmada</option>
-              <option value="2">Cancelada</option>
+              <option value="confirmed">Confirmada</option>
+              <option value="canceled">Cancelada</option>
             </select>
           </div>
-
-          <div class="modal-actions">
-            <button type="submit" class="btn btn-primary">Adicionar</button>
-            <button type="button" class="btn btn-secondary" @click="showAddMeetingModal = false">Cancelar</button>
-          </div>
         </form>
-      </div>
-    </div>
+      </template>
+      <template #modal-footer>
+        <button
+          type="submit"
+          form="addMeeting"
+          class="btn btn-primary"
+        >
+            Adicionar
+        </button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          @click="closeModal"
+        >
+          Cancelar
+        </button>
+      </template>
+    </Modal>
   </div>
 </template>
 
 <script setup>
+import Modal from '@/components/Modal.vue';
 import { ref, onMounted } from 'vue';
-import axios from 'axios';
-import AdminSidebar from '../components/AdminSidebar.vue';
+import AdminSidebar from '@/components/AdminSidebar.vue';
+import { apiCreateMeeting, apiGetAllMeetings, apiUpdateMeeting } from '@/http';
+import { toast } from 'vue3-toastify';
 
 const upcomingMeetings = ref([]);
-const showAddMeetingModal = ref(false);
+const showModal = ref(false);
+const modalType = ref(null);
+const editMeetingId = ref(null)
 const newMeeting = ref({
   room_id: '',
   user_id: '',
@@ -97,71 +109,117 @@ const newMeeting = ref({
   date: '',
   start_time: '',
   end_time: '',
-  status: '0',
+  status: 'confirmed',
 });
 
-const apiUrl = 'http://localhost:8000/api/meetings/';
+function openModal(type, meeting) {
+  modalType.value = type
+  showModal.value = true;
+
+  if (type === 'edit' && meeting) {
+    editMeetingId.value = meeting.id
+
+    newMeeting.value = {...meeting}
+  }
+}
+
+function resetMeetingForm() {
+  newMeeting.value = {
+    room_id: '',
+    user_id: '',
+    title: '',
+    description: '',
+    date: '',
+    start_time: '',
+    end_time: '',
+    status: 'pending',
+  };
+}
+
+function closeModal() {
+  showModal.value = false;
+  modalType.value = null;
+  editMeetingId.value = null;
+}
+
+function formatFetchedMeeting(meeting) {
+  return {
+    ...meeting,
+    time: `${meeting.start_time} - ${meeting.end_time}`,
+    organizer: meeting.user.name,
+    room: meeting.room.nome
+  }
+}
 
 const fetchMeetings = async () => {
   try {
-    const response = await axios.get(apiUrl);
-    // Mapeia as reuniões para incluir um formato legível para o horário
-    upcomingMeetings.value = response.data.map(meeting => ({
-      ...meeting,
-      date: meeting.date, // Exibe a data
-      time: `${meeting.start_time} - ${meeting.end_time}`, // Combina start_time e end_time em uma string para exibição
-      organizer: meeting.user_id, // Assume que o user_id representa o organizador (ajuste conforme necessário)
-      room: meeting.room_id
-    }));
+    const meetings = await apiGetAllMeetings();
+
+    upcomingMeetings.value = meetings.map(meeting => (({
+      ...formatFetchedMeeting(meeting)
+    })));
   } catch (error) {
-    console.error('Erro ao buscar reuniões:', error);
+    toast.error(error, { autoClose: 5000 });
   }
 };
 
+function formatPayload() {
+  return {
+    ...newMeeting.value,
+    date: new Date(newMeeting.value.date).toISOString().split('T')[0], 
+  };
+}
+
+function increaseMeetings(type, meeting) {
+  if (type === 'add') {
+    upcomingMeetings.value = [
+      ...upcomingMeetings.value,
+      {...formatFetchedMeeting(meeting)}
+    ]
+  } else {
+    upcomingMeetings.value = upcomingMeetings.value.map((currentMeeting) => {
+      if (currentMeeting.id === meeting.id) {
+        return {...formatFetchedMeeting(meeting)};
+      }
+
+      return currentMeeting;
+    })
+  }
+}
 
 const addMeeting = async () => {
   try {
-    const meeting = {
-      room_id: newMeeting.value.room_id,
-      user_id: newMeeting.value.user_id,
-      title: newMeeting.value.title,
-      description: newMeeting.value.description,
-      // Certifique-se que a data está no formato correto
-      date: new Date(newMeeting.value.date).toISOString().split('T')[0], 
-      start_time: newMeeting.value.start_time,
-      end_time: newMeeting.value.end_time,
-      status: newMeeting.value.status,
-    };
+    const payload = formatPayload();
 
-    const response = await axios.post(apiUrl, meeting);
+    const createdMeeting = await apiCreateMeeting(payload);
 
-    upcomingMeetings.value.push({
-      ...response.data,
-      date: response.data.date,
-      time: `${response.data.start_time} - ${response.data.end_time}`,
-      organizer: response.data.user_id,
-      room: response.data.room_id
-    });
-
-    newMeeting.value = {
-      room_id: '',
-      user_id: '',
-      title: '',
-      description: '',
-      date: '',
-      start_time: '',
-      end_time: '',
-      status: '0',
-    };
-
-    showAddMeetingModal.value = false;
+    closeModal();
+    increaseMeetings('add', createdMeeting);
+    resetMeetingForm();
+    toast.success('Reunião criada com sucesso!', { autoClose: 5000 });
   } catch (error) {
-    console.error('Erro ao adicionar reunião:', error);
+    toast.error(error.response.data.message, { autoClose: 5000 });
   }
 };
 
+async function updateMeeting() {
+  try {
+    const payload = formatPayload();
 
+    const createdMeeting = await apiUpdateMeeting(editMeetingId, payload);
 
+    closeModal()
+    increaseMeetings('edit', createdMeeting);
+    resetMeetingForm();
+    toast.success('Reunião criada com sucesso!', { autoClose: 5000 });
+  } catch (error) {
+    toast.error(error.response.data.message, { autoClose: 5000 });
+  }
+}
+
+function handleSubmit() {
+  modalType.value === 'add' ? addMeeting() : updateMeeting();
+}
 
 onMounted(fetchMeetings);
 </script>
