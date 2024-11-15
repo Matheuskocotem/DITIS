@@ -9,6 +9,7 @@ import { apiDeleteRoom } from './delete-room'
 import { apiGetAllMeetings } from './get-all-meetings'
 import { apiCreateMeeting } from './create-meeting'
 import { apiUpdateMeeting } from './update-meeting'
+import { apiLogout } from './logout'
 
 export {
   apiLogin,
@@ -21,5 +22,6 @@ export {
   apiDeleteRoom,
   apiGetAllMeetings,
   apiCreateMeeting,
-  apiUpdateMeeting
+  apiUpdateMeeting,
+  apiLogout
 }

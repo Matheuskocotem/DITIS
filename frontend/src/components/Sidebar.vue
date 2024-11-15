@@ -49,20 +49,14 @@ const toggleProfileMenu = () => {
 
 const logout = async () => {
   try {
-    await axios.post('http://localhost:8000/api/logout', {}, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`
-      }
-    })
-
-    localStorage.removeItem('token')
+    await apiLogout();
+    localStorage.removeItem("token");
     toast.success("Logout realizado com sucesso!", { autoClose: 10000 });
-    router.push('/login') 
+    router.push("/login");
   } catch (error) {
-    console.error('Erro ao fazer logout:', error)
-    toast.error("Erro ao fazer logout!", { autoClose: 10000});
+    toast.error("Erro ao fazer logout!", { autoClose: 10000 });
   }
-}
+};
 </script>
 
 

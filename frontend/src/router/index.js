@@ -38,7 +38,7 @@ const routes = [
   {
     path: '/salas',
     name: 'salas',
-    component: () => import('../views/EscolherSala.vue'),
+    component: () => import('../views/user/Rooms.vue'),
     meta: {
       title: 'salas',
       requiresAuth: true,

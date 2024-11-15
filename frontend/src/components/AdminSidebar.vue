@@ -53,6 +53,7 @@ import {
 } from "lucide-vue-next";
 import axios from "axios";
 import { toast } from "vue3-toastify";
+import { apiLogout } from "@/http";
 
 const showProfileMenu = ref(false);
 const router = useRouter();
@@ -63,20 +64,11 @@ const toggleProfileMenu = () => {
 
 const logout = async () => {
   try {
-    await axios.post(
-      "http://localhost:8000/api/logout",
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
-    );
+    await apiLogout();
     localStorage.removeItem("token");
     toast.success("Logout realizado com sucesso!", { autoClose: 10000 });
     router.push("/login");
   } catch (error) {
-    console.error("Erro ao fazer logout:", error);
     toast.error("Erro ao fazer logout!", { autoClose: 10000 });
   }
 };

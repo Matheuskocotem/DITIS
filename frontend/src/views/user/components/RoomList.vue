@@ -5,28 +5,15 @@
     </div>
     <div v-for="room in rooms" :key="room.id" class="room-card">
       <div class="room-content">
-        <h3 class="room-name">{{ room.name }}</h3>
-        <p class="room-capacity">Capacidade: {{ room.capacity }} pessoas</p>
+        <h3 class="room-name">{{ room.nome }}</h3>
         <div class="room-resources">
           <span
-            v-for="resource in room.resources"
+            v-for="resource in room.recursos"
             :key="resource"
             class="resource"
           >
             {{ resource }}
           </span>
-        </div>
-        <div class="room-slots">
-          <h4 class="slots-title">Horários Disponíveis:</h4>
-          <div class="slot-list">
-            <span
-              v-for="(slot, index) in room.availableSlots"
-              :key="index"
-              class="slot"
-            >
-              {{ slot }}
-            </span>
-          </div>
         </div>
       </div>
       <div class="room-footer">
@@ -42,31 +29,6 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import axios from 'axios'
-
-const rooms = ref([])
-
-const api = axios.create({
-  baseURL: 'http://localhost:8000/api',
-})
-
-const fetchRooms = async () => {
-  try {
-    const response = await api.get('/meeting-rooms/')
-    rooms.value = response.data.map(room => ({
-      ...room,
-      availableSlots: room.disponibilidade,  // Atribuindo diretamente o array de horários
-    }))
-  } catch (error) {
-    console.error('Erro ao buscar salas:', error.response?.data || error.message)
-  }
-}
-
-
-// Chamando fetchRooms ao montar o componente
-onMounted(fetchRooms)
-
 defineProps({
   rooms: Array
 })
@@ -82,8 +44,8 @@ defineEmits(['open-reservation'])
 }
 
 .no-rooms {
-  grid-column: span 100%; /* Ocupa todas as colunas */
-  text-align: center; /* Centraliza o texto */
+  grid-column: span 100%;
+  text-align: center;
   font-size: 1.25rem;
   color: #666;
 }
@@ -105,6 +67,7 @@ defineEmits(['open-reservation'])
 
 .room-name {
   font-size: 1.25rem;
+  margin-bottom: 2rem;
   font-weight: 600;
   color: #333;
 }
