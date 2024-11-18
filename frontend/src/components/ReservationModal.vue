@@ -48,7 +48,7 @@ const formatDate = (dateString) => {
   <div v-show="show" class="modal-overlay">
     <div class="modal">
       <h2>Reservar Sala</h2>
-      <p><strong>Data da Reunião:</strong> {{ formatDate(props.date) }}</p> <!-- Exibindo a data formatada aqui -->
+      <p><strong>Data da Reunião:</strong> {{ formatDate(props.date) }}</p>
       <form @submit.prevent="save">
         <div class="form-group">
           <label for="meetingName">Nome da Reunião:</label>
