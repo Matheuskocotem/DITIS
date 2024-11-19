@@ -11,6 +11,7 @@ import { apiCreateMeeting } from './create-meeting'
 import { apiUpdateMeeting } from './update-meeting'
 import { apiLogout } from './logout'
 import { apiUpdateStatus } from './update-status'
+import { apiGetSummaryData } from './getSummaryData'
 
 export {
   apiLogin,
@@ -25,5 +26,6 @@ export {
   apiCreateMeeting,
   apiUpdateMeeting,
   apiLogout,
-  apiUpdateStatus
+  apiUpdateStatus,
+  apiGetSummaryData
 }

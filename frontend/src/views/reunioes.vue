@@ -15,8 +15,8 @@
 </template>
 
 <script setup>
-import SideBar from '../components/Sidebar.vue' 
-import Calendar from '../components/Calendar.vue'
+import SideBar from '@/components/Sidebar.vue' 
+import Calendar from '@/components/Calendar.vue'
 </script>
 
 <style scoped>

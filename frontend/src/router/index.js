@@ -58,7 +58,7 @@ const routes = [
   {
     path: '/admindash',
     name: 'admindash',
-    component: () => import('../views/Dashboard.vue'),
+    component: () => import('../views/admin/Dashboard.vue'),
     meta: {
       title: 'admindash',
       requiresAuth: true,
