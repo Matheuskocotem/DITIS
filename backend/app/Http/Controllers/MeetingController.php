@@ -34,6 +34,14 @@ class MeetingController extends Controller
         ]);
     }
 
+    public function getMyMeetings(Request $request)
+    {
+        $user = $request->user();
+        $meetings = Meeting::where('user_id', $user->id)->get();
+
+        return response()->json($meetings);
+    }
+
     public function getReservationsByDay($date)
     {
         $reservationsCount = $this->meetingService->getReservationsCount($date);

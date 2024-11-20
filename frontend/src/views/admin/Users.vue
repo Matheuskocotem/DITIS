@@ -25,7 +25,7 @@
             <tr v-for="user in users" :key="user.id">
               <td>{{ user.name }}</td>
               <td>{{ user.cpf }}</td>
-              <td>
+              <td v-if="!enableActionButtons(user.id)">
                 <button class="btn btn-edit btn-secondary mx-1" @click="editUser(user)">
                   Editar
                 </button>
@@ -39,7 +39,6 @@
       </div>
     </main>
 
-    <!-- Modal de Adicionar/Editar Usuário -->
     <div class="modal fade" :class="{ show: showModal, 'd-block': showModal }" tabindex="-1" role="dialog" style="background: rgba(0, 0, 0, 0.5)">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -87,8 +86,9 @@
 </template>
 
 <script>
-import axios from 'axios';
-import AdminSidebar from "../components/AdminSidebar.vue";
+import AdminSidebar from "@/components/AdminSidebar.vue";
+import { apiCreateUser, apiDeleteUser, apiGetUsers, apiUpdateUser } from '@/http';
+import { toast } from 'vue3-toastify';
 
 export default {
   components: {
@@ -100,22 +100,22 @@ export default {
       isEditing: false,
       newUser: { id: null, name: "", email: "", role: "", cpf: "", password: "", password_confirmation: "",},
       users: [],
+      userId: null,
     };
   },
-  created() {
+  mounted() {
     this.fetchUsers();
+    this.getUserIdFromLocalStorage();
   },
   methods: {
     async fetchUsers() {
       try {
-        const response = await axios.get('http://localhost:8000/api/users/index');
-        this.users = response.data.users;
+        const data = await apiGetUsers();
+        this.users = data.users;
       } catch (error) {
-        console.error("Erro ao buscar usuários:", error.response ? error.response.data : error.message);
-        alert("Erro ao carregar usuários: " + (error.response?.data?.message || "Erro desconhecido."));
+        toast.error(`Erro ao carregar usuários: ${(error.response?.data?.message || "Erro desconhecido.")}`);
       }
     },
-
 
     openModal() {
       this.isEditing = false;
@@ -126,32 +126,41 @@ export default {
       this.showModal = false;
       this.newUser = { id: null, name: "", email: "", role: "" };
     },
+    getUserIdFromLocalStorage() {
+      const userId = localStorage.getItem('userId');
+      this.userId = Number(userId)
+    },
+    enableActionButtons(id) {
+      return id === this.userId;
+    },
     async saveUser() {
+      const payload = {
+        ...this.newUser,
+        cpf: this.newUser.cpf.replace(/\D/g, '')
+      }
+
       try {
         if (this.isEditing) {
-          await axios.put(`http://localhost:8000/api/users/updateAdmin/${this.newUser.id}`, this.newUser);
-          alert("Usuário atualizado com sucesso!");
+          const data = await apiUpdateUser(this.newUser.id, payload);
+          toast.success(data.message);
         } else {
-          const response = await axios.post('http://localhost:8000/api/users/add-admin', this.newUser);
-          this.users.push(response.data);
-          alert("Usuário adicionado com sucesso!");
+          const data = await apiCreateUser(payload);
+          toast.success(data.message);
         }
         this.fetchUsers(); 
         this.closeModal();
       } catch (error) {
-        console.error("Erro ao salvar usuário:", error.response?.data);
-        alert("Erro ao salvar usuário: " + (error.response?.data?.message || "Erro desconhecido."));
+        toast.error(`Erro ao salvar usuário: ${(error.response?.data?.message || "Erro desconhecido.")}`);
       }
     },
     async deleteUser(userId) {
       if (!confirm("Tem certeza que deseja excluir este usuário?")) return;
       try {
-        await axios.delete(`http://localhost:8000/api/delete/${userId}`);
+        await apiDeleteUser(userId);
         this.users = this.users.filter(user => user.id !== userId);
-        alert("Usuário excluído com sucesso!");
+        toast.success("Usuário excluído com sucesso!");
       } catch (error) {
-        console.error("Erro ao excluir usuário:", error.response?.data);
-        alert("Erro ao excluir usuário: " + (error.response?.data?.message || "Erro desconhecido."));
+        toast.error(`Erro ao excluir usuário: ${(error.response?.data?.message || "Erro desconhecido.")}`);
       }
     },
     editUser(user) {
@@ -164,7 +173,6 @@ export default {
 </script>
 
 <style scoped>
-/* Estilo da Sidebar */
 .sidebar {
   position: fixed;
   left: 0;
@@ -176,14 +184,11 @@ export default {
   z-index: 10;
 }
 
-/* Layout principal */
 .manage-users {
   padding: 1.5rem;
   margin-left: 250px;
-  /* Ajusta para acomodar a sidebar */
 }
 
-/* Estilo da tabela de usuários */
 .users-table {
   width: 100%;
   border-collapse: collapse;
@@ -201,7 +206,6 @@ export default {
   background-color: #f3f4f6;
 }
 
-/* Modal transitions */
 .modal.fade.show {
   opacity: 1;
   transition: opacity 0.3s ease;

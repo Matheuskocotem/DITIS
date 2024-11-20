@@ -12,6 +12,10 @@ import { apiUpdateMeeting } from './update-meeting'
 import { apiLogout } from './logout'
 import { apiUpdateStatus } from './update-status'
 import { apiGetSummaryData } from './getSummaryData'
+import { apiGetUsers } from './get-users';
+import { apiUpdateUser } from './updateUser'
+import { apiCreateUser } from './createUser'
+import { apiDeleteUser } from './deleteUser'
 
 export {
   apiLogin,
@@ -27,5 +31,9 @@ export {
   apiUpdateMeeting,
   apiLogout,
   apiUpdateStatus,
-  apiGetSummaryData
+  apiGetSummaryData,
+  apiGetUsers,
+  apiUpdateUser,
+  apiCreateUser,
+  apiDeleteUser
 }

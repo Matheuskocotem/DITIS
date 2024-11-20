@@ -31,6 +31,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::prefix('meetings')->group(function () {
         Route::get('/day/{date}', [MeetingController::class, 'getMeetingsByDay']);
         Route::get('/', [MeetingController::class, 'index']);
+        Route::get('/my-meetings', [MeetingController::class, 'getMyMeetings']);
         Route::post('/', [MeetingController::class, 'store']);
         Route::get('/{id}', [MeetingController::class, 'show']);
         Route::put('/{id}', [MeetingController::class, 'update']);

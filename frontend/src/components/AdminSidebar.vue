@@ -28,9 +28,6 @@
         <span>Perfil</span>
       </button>
       <div v-if="showProfileMenu" class="profile-menu">
-        <RouterLink to="/admin/perfil" class="menu-item"
-          >Editar Perfil</RouterLink
-        >
         <button @click="logout" class="menu-item logout">
           <LogOut class="icon" />
           <span>Sair</span>

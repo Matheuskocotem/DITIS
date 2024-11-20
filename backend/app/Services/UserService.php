@@ -76,7 +76,11 @@ class UserService
         }
 
         $token = $user->createToken('token-name')->plainTextToken;
-        return ['token' => $token, 'role' => $user->role];
+        return [
+            'id' => $user->id,
+            'token' => $token,
+            'role' => $user->role
+        ];
     }
 
     public function logoutUser($user)

@@ -88,7 +88,7 @@ const routes = [
   {
     path: '/useradmin',
     name: 'useradmin',
-    component: () => import('../views/Users.vue'),
+    component: () => import('../views/admin/Users.vue'),
     meta: {
       title: 'useradmin',
       requiresAuth: true,
