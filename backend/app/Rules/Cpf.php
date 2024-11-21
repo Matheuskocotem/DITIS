@@ -6,6 +6,7 @@ use Illuminate\Contracts\Validation\Rule;
 
 class Cpf implements Rule
 {
+    //validator cpf
     public function passes($attribute, $value)
     {
         $cpf = preg_replace('/[^0-9]/', '', $value);
