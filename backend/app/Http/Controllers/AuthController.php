@@ -50,9 +50,17 @@ class AuthController extends Controller
             'email' => 'required|string|email|unique:users',
             'cpf' => 'required|string|max:11|unique:users',
             'password' => 'required|string|min:8|confirmed',
+            'role' => 'sometimes|string|in:admin,user',
         ]);
 
-        return response()->json(['message' => 'Administrador registrado com sucesso!', 'admin' => $this->userService->addAdmin($data)]);
+        $data['role'] = $data['role'] ?? 'user';
+
+        $user = $this->userService->addAdmin($data);
+
+        return response()->json([
+            'message' => ucfirst($data['role']) . ' registrado com sucesso!',
+            'user' => $user,
+        ], 201);
     }
 
     public function updateAdmin(Request $request, $id)
@@ -62,9 +70,15 @@ class AuthController extends Controller
             'email' => 'sometimes|required|string|email|unique:users,email,' . $id,
             'cpf' => 'sometimes|required|string|max:11|unique:users,cpf,' . $id,
             'password' => 'sometimes|required|string|min:8|confirmed|nullable',
+            'role' => 'sometimes|string|in:admin,user',
         ]);
 
-        return response()->json(['message' => 'Administrador atualizado com sucesso!', 'admin' => $this->userService->updateAdmin($id, $data)]);
+        $user = $this->userService->updateUser($id, $data);
+
+        return response()->json([
+            'message' => ucfirst($user->role) . ' atualizado com sucesso!',
+            'user' => $user,
+        ]);
     }
 
     public function update(Request $request, $id)

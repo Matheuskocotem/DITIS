@@ -58,15 +58,35 @@
               </div>
               <div class="form-group m-3">
                 <label for="cpf">CPF:</label>
-                <input type="text" id="cpf" class="form-control" v-model="newUser.cpf" required />
+                <input
+                  type="text"
+                  id="cpf"
+                  maxlength="14"
+                  class="form-control"
+                  v-model="newUser.cpf"
+                  @input="handleCpfInput"
+                  required
+                />
               </div>
               <div class="form-group m-3">
                 <label for="password">Senha:</label>
-                <input type="password" id="password" class="form-control" v-model="newUser.password" required />
+                <input
+                  type="password"
+                  id="password"
+                  class="form-control"
+                  v-model="newUser.password"
+                  :required="!isEditing"
+                />
               </div>
               <div class="form-group m-3">
                 <label for="confirmation_password">Confirme sua Senha:</label>
-                <input type="password" id="confirmation_password" class="form-control" v-model="newUser.password_confirmation" required />
+                <input
+                  type="password"
+                  id="confirmation_password"
+                  class="form-control"
+                  v-model="newUser.password_confirmation"
+                  :required="!isEditing"
+                />
               </div>
               <div class="form-group m-3">
                 <label for="role">Função:</label>
@@ -89,6 +109,7 @@
 import AdminSidebar from "@/components/AdminSidebar.vue";
 import { apiCreateUser, apiDeleteUser, apiGetUsers, apiUpdateUser } from '@/http';
 import { toast } from 'vue3-toastify';
+import { formatCpf } from '@/utils/format-cpf';
 
 export default {
   components: {
@@ -108,6 +129,9 @@ export default {
     this.getUserIdFromLocalStorage();
   },
   methods: {
+    handleCpfInput() {
+      this.newUser.cpf = formatCpf(this.newUser.cpf)
+    },
     async fetchUsers() {
       try {
         const data = await apiGetUsers();

@@ -44,7 +44,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::middleware(['role:admin'])->prefix('users')->group(function () {
         Route::get('/index', [AuthController::class, 'index']);
         Route::post('/add-admin', [AuthController::class, 'addAdmin']);
-        Route::put('/updateAdmin', [AuthController::class, 'updateAdmin']);
+        Route::put('/updateAdmin/{id}', [AuthController::class, 'updateAdmin']);
         Route::get('/summary-data', [AuthController::class, 'getSummaryData']);
     });
 });

@@ -66,7 +66,6 @@ export default {
     const email = this.$route.params.email;
     if (token && email) {
       this.form.email = email;
-      this.form.password = password;
     }
   },
 

@@ -56,8 +56,8 @@ const routes = [
     },
   },
   {
-    path: '/admindash',
-    name: 'admindash',
+    path: '/dashboard',
+    name: 'dashboard',
     component: () => import('../views/admin/Dashboard.vue'),
     meta: {
       title: 'admindash',
@@ -105,7 +105,7 @@ const routes = [
   },
   {
     path: '/',
-    name: 'VizualiazarReunioes',
+    name: 'reunioes',
     component: () => import('../views/reunioes.vue'),
     meta: {
       title: 'calendario',
@@ -129,9 +129,11 @@ router.beforeEach((to, from, next) => {
   if (to.meta.requiresAuth) {
     if (!isAuthenticated) {
       next({ name: 'login' });
+    } else if (to.meta.role && to.meta.role !== 'admin' && to.meta.role !== 'user') {
+      next({ name: 'BadRequest' });
     } else {
-      if (to.meta.role && to.meta.role !== userRole) {
-        next({ name: 'BadRequest' });
+      if (to.path === '/' && userRole === 'admin') {
+        next({ name: 'dashboard' });
       } else {
         next();
       }

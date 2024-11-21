@@ -29,13 +29,33 @@ class UserService
 
     public function addAdmin($data)
     {
-        $data['role'] = 'admin';
+        if (!auth()->check() || auth()->user()->role !== 'admin') {
+            throw new \Exception('Você não tem permissão para adicionar um usuário.');
+        }
+
+        if (!isset($data['role'])) {
+            throw new \Exception('A role deve ser especificada.');
+        }
+
         return $this->registerUser($data);
     }
 
-    public function updateAdmin($id, $data)
+    public function updateAdmin($id, array $data)
     {
         $user = $this->userRepository->findUserById($id);
+
+        if (!$user) {
+            throw new \Exception('Usuário não encontrado.');
+        }
+
+        if (isset($data['role']) && $data['role'] !== $user->role) {
+            if (!auth()->check() || auth()->user()->role !== 'admin') {
+                throw new \Exception('Você não tem permissão para alterar a role de um usuário.');
+            }
+            if (!in_array($data['role'], ['admin', 'user'])) {
+                throw new \Exception('Role inválida.');
+            }
+        }
 
         if (isset($data['password'])) {
             $data['password'] = Hash::make($data['password']);

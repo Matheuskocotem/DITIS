@@ -4,7 +4,7 @@
       <img alt="Logo" src="@/assets/Logoditis.png" width="40" height="40" />
     </div>
     <nav>
-      <RouterLink to="/admindash" class="nav-item">
+      <RouterLink to="/dashboard" class="nav-item">
         <Home class="icon" />
         <span>Dashboard</span>
       </RouterLink>
@@ -48,7 +48,6 @@ import {
   UserPlus,
   LogOut,
 } from "lucide-vue-next";
-import axios from "axios";
 import { toast } from "vue3-toastify";
 import { apiLogout } from "@/http";
 
@@ -78,8 +77,8 @@ const logout = async () => {
 }
 
 .logo img {
-  width: 150px; /* Aumente este valor conforme necessário */
-  height: auto; /* Mantém a proporção da imagem */
+  width: 150px;
+  height: auto;
 }
 
 .sidebar {

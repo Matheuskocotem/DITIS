@@ -62,8 +62,8 @@ export default {
         });
         
         const mapRoleScopes = {
-          admin: 'admindash',
-          user: 'VizualiazarReunioes'
+          admin: 'dashboard',
+          user: 'reunioes'
         }
         
         toast.success("Login realizado com sucesso!", { autoClose: 5000 });
