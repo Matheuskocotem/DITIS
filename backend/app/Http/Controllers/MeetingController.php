@@ -37,9 +37,7 @@ class MeetingController extends Controller
     public function getMyMeetings(Request $request)
     {
         $user = $request->user();
-        $meetings = Meeting::where('user_id', $user->id)->get();
-
-        return response()->json($meetings);
+        return response()->json($this->meetingService->getMeetingsByUser($user->id));
     }
 
     public function getReservationsByDay($date)

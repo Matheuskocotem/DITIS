@@ -5,7 +5,7 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import listPlugin from '@fullcalendar/list'
 import interactionPlugin from '@fullcalendar/interaction'
 import ptLocale from '@fullcalendar/core/locales/pt-br'
-import { apiGetAllMeetings } from '@/http'
+import { apiGetAllMeetings, apiGetUserMeetings } from '@/http'
 import { toast } from 'vue3-toastify'
 
 export default {
@@ -28,8 +28,10 @@ export default {
       calendarApi.changeView(view)
     },
     async fetchMeetings() {
+      const userRole = localStorage.getItem('role');
+
       try {
-        const data = await apiGetAllMeetings();
+        const data = userRole === 'admin' ? await apiGetAllMeetings() : await apiGetUserMeetings();
         
         const formattedEvents = data.map((event) => ({
           title: event.title,

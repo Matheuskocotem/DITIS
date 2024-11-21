@@ -36,27 +36,27 @@
         <form @submit.prevent="handleSubmit" id="roomForm">
           <div class="form-group">
             <label for="roomName">Nome da Sala:</label>
-            <input type="text" id="roomName" v-model="currentRoom.nome" required>
+            <input type="text" class="form-control" id="roomName" v-model="currentRoom.nome" required>
           </div>
 
           <div class="form-group">
             <label for="roomLocation">Localização:</label>
-            <input type="text" id="roomLocation" v-model="currentRoom.localizacao" required>
+            <input type="text" id="roomLocation" class="form-control" v-model="currentRoom.localizacao" required>
           </div>
 
           <div class="form-group">
             <label for="roomCapacity">Capacidade:</label>
-            <input type="number" id="roomCapacity" v-model="currentRoom.capacidade" required min="1">
+            <input type="number" class="form-control" id="roomCapacity" v-model="currentRoom.capacidade" required min="1">
           </div>
 
           <div class="form-group">
             <label for="roomResources">Recursos:</label>
-            <input type="text" id="roomResources" v-model="currentRoom.recursos">
+            <input type="text" class="form-control" id="roomResources" v-model="currentRoom.recursos">
           </div>
           
           <div class="form-group">
             <label for="roomDescription">Descrição:</label>
-            <textarea id="roomDescription" v-model="currentRoom.descricao"></textarea>
+            <textarea id="roomDescription" class="form-control" v-model="currentRoom.descricao"></textarea>
           </div>
         </form>
       </template>
@@ -231,6 +231,12 @@ onMounted(async () => {
 
 .rooms-table th {
   background-color: #f3f4f6;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .btn {

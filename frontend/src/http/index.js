@@ -16,6 +16,7 @@ import { apiGetUsers } from './get-users';
 import { apiUpdateUser } from './updateUser'
 import { apiCreateUser } from './createUser'
 import { apiDeleteUser } from './deleteUser'
+import { apiGetUserMeetings } from './get-user-meetings'
 
 export {
   apiLogin,
@@ -35,5 +36,6 @@ export {
   apiGetUsers,
   apiUpdateUser,
   apiCreateUser,
-  apiDeleteUser
+  apiDeleteUser,
+  apiGetUserMeetings
 }

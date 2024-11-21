@@ -35,7 +35,7 @@ class MeetingService
     public function getRoomOccupancy($date)
     {
         $date = Carbon::parse($date)->format('Y-m-d');
-        
+
         $occupancyByRoom = $this->meetingRepository->getRoomOccupancyByDate($date);
 
         $occupancyData = [];
@@ -84,6 +84,11 @@ class MeetingService
         $data['user_id'] = Auth::id();
 
         return $this->meetingRepository->createMeeting($data);
+    }
+
+    public function getMeetingsByUser($userId)
+    {
+        return $this->meetingRepository->getMeetingsByUser($userId);
     }
 
     public function updateMeeting($id, array $data)

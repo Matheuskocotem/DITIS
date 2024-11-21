@@ -37,7 +37,7 @@
 
 <script>
 import SideBar from '@/components/Sidebar.vue';
-import { apiGetAllMeetings, apiUpdateStatus } from '@/http';
+import { apiGetUserMeetings, apiUpdateStatus } from '@/http';
 import { toast } from 'vue3-toastify';
 import BadgeStatus from './components/BadgeStatus.vue'
 
@@ -65,7 +65,9 @@ export default {
     },
     async fetchMeetings() {
       try {
-        const data = await apiGetAllMeetings()
+        const data = await apiGetUserMeetings()
+        console.log(data);
+        
         this.meetings = data;
       } catch (error) {
         toast.error('Erro ao buscar reuniões:', { autoClose: 5000 });

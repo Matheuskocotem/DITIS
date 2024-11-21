@@ -57,6 +57,11 @@ class MeetingRepository
         return $meeting->delete();
     }
 
+    public function getMeetingsByUser($userId)
+    {
+        return Meeting::with('user', 'room')->where('user_id', $userId)->get();
+    }
+
     public function hasTimeConflict($roomId, $startTime, $endTime)
     {
         \Log::info("Verificando conflito para Sala ID: $roomId, Início: $startTime, Fim: $endTime");
