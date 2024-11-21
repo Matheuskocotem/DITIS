@@ -1,8 +1,3 @@
-
-# TCC de urgencia
-
-Este projeto é uma aplicação web desenvolvida com **Laravel** no backend e **Vue.js** no frontend. O objetivo é proporcionar uma experiência de usuário moderna e responsiva, permitindo a gestão eficiente de dados por meio de uma interface intuitiva. A aplicação é ideal para desenvolvedores que desejam uma configuração de projeto rápida e organizada utilizando contêineres Docker.
-
 ## Pré-requisitos
 
 - [Docker](https://www.docker.com/get-started) instalado
