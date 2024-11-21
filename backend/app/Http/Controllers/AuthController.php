@@ -34,7 +34,7 @@ class AuthController extends Controller
         $data = $request->validate([
             'name' => 'required|string',
             'email' => 'required|string|email|unique:users',
-            'cpf' => 'required|string|max:11|unique:users',
+            'cpf' => ['required', 'string', 'unique:users,cpf', new \App\Rules\Cpf],
             'password' => 'required|string|min:8|confirmed',
         ]);
 
