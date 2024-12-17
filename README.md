@@ -1,85 +1,67 @@
-## Pré-requisitos
+Pré-requisitos
 
-- [Docker](https://www.docker.com/get-started) instalado
-- [Docker Compose](https://docs.docker.com/compose/install/) instalado
+Docker instalado
 
-## Instruções de Execução
+Docker Compose instalado
 
-### Execução Inicial
+Instruções de Execução
+
+Execução Inicial
 
 Antes de executar o projeto pela primeira vez, siga os passos abaixo:
 
-1. **Parar e Remover Contêineres Existentes:**
+Criar os Arquivos .env:
 
-   Execute os seguintes comandos para parar e remover todos os contêineres em execução:
+Na pasta /src/backend, crie um arquivo chamado .env e copie o conteúdo do arquivo .env.example para ele. Repita o mesmo processo na pasta /src/frontend, criando o arquivo .env com o conteúdo de .env.example.
 
-   ```bash
-   docker stop $(docker ps -qa)
-   docker rm $(docker ps -qa)
-   ```
+Atualizar Dependências do Backend:
 
-2. **Criar o Arquivo `.env`:**
+Execute o seguinte comando para instalar as dependências do backend:
 
-   Na pasta `/src`, crie um arquivo chamado `.env` e copie o conteúdo do arquivo `.env.example` para ele.
+docker compose run --rm composer update
 
-3. **Executar os Contêineres:**
+Gerar a Chave do Backend:
 
-   Execute o seguinte comando para construir e iniciar os contêineres:
+Execute o comando abaixo para gerar a chave de aplicação do backend:
 
-   ```bash
-   docker compose up --build -d
-   ```
+docker compose run --rm artisan key:generate
 
-4. **Executar o Composer e Gerar Chave:**
+Migrar o Banco de Dados:
 
-   Em um novo terminal, execute os seguintes comandos:
+Execute o comando abaixo para criar o banco de dados:
 
-   ```bash
-   docker compose run --rm composer update
-   docker compose run --rm artisan key:generate
-   ```
+docker compose run --rm artisan migrate
 
-5. **Migrar o Banco de Dados:**
+Executar os Contêineres:
 
-   Execute o comando abaixo para criar o banco de dados:
+Por fim, execute o seguinte comando para construir e iniciar os contêineres:
 
-   ```bash
-   docker compose run --rm artisan migrate
-   ```
+docker compose up --build -d
 
-### Comandos Úteis
+Comandos Úteis
 
-- Para usar o Docker:
+Para usar o Docker:
 
-  ```bash
-  docker compose up --build
-  ```
+docker compose up --build
 
-- Para instalar um pacote no frontend:
+Para instalar um pacote no frontend:
 
-  ```bash
-  docker compose run --rm npm <COMANDO>
-  ```
+docker compose run --rm npm <COMANDO>
 
-- Para executar comandos do PHP Artisan:
+Para executar comandos do PHP Artisan:
 
-  ```bash
-  docker compose run --rm artisan <COMANDO>
-  ```
+docker compose run --rm artisan <COMANDO>
 
-- Para executar comandos do Composer:
+Para executar comandos do Composer:
 
-  ```bash
-  docker compose run --rm composer <COMANDO>
-  ```
+docker compose run --rm composer <COMANDO>
 
-## Observações
+Observações
 
-- Sempre que executar comandos do Docker, é necessário estar na mesma pasta que contém o arquivo `docker-compose.yml` (neste caso, a pasta raiz).
-- É recomendado utilizar a imagem do Docker para aqueles que estiverem em ambiente Linux.
+Sempre que executar comandos do Docker, é necessário estar na mesma pasta que contém o arquivo docker-compose.yml (neste caso, a pasta raiz).
 
-## Contribuições
+É recomendado utilizar a imagem do Docker para aqueles que estiverem em ambiente Linux.
 
-Contribuições são bem-vindas! Sinta-se à vontade para abrir uma *issue* ou enviar um *pull request*.
+Contribuições
 
-
+Contribuições são bem-vindas! Sinta-se à vontade para abrir uma issue ou enviar um pull request.
