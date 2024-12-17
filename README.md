@@ -65,3 +65,4 @@ Sempre que executar comandos do Docker, é necessário estar na mesma pasta que 
 Contribuições
 
 Contribuições são bem-vindas! Sinta-se à vontade para abrir uma issue ou enviar um pull request.
+
