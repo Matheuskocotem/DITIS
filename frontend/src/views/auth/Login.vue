@@ -23,16 +23,16 @@
           required
           aria-label="Senha"
         />
-        
+<!--         
         <a href="forgot-password" class="forgot-password">Esqueceu sua senha?</a>
-        
+         -->
         <button type="submit">Entrar</button>
       </form>
       
-      <p class="register">
+      <!-- <p class="register">
         Não tem uma conta?
         <a href="/register">Registre-se</a>
-      </p>
+      </p> -->
     </section>
 
     <p class="copyright">© 2024 by Nexgen Arch</p>

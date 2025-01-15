@@ -29,7 +29,7 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: TCC
+      MYSQL_DATABASE: Ditis
       MYSQL_PASSWORD: root
     ports:
       - "3307:3306"
@@ -48,7 +48,7 @@ services:
     depends_on:
       - mysql
     ports:
-      - "8086:80"
+      - "8087:80"
     networks:
       - laravel-vue
 
