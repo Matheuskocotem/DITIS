@@ -18,10 +18,10 @@
             <input type="date" id="date" v-model="reservation.date" required />
             
             <label for="startTime">Horário de Início</label>
-            <input id="startTime" v-model="reservation.startTime" required />
+            <input id="startTime" v-model="reservation.startTime" @input="handleStartTimeInput" required placeholder="HH:mm" />
 
             <label for="endTime">Horário de Término</label>
-            <input id="endTime" v-model="reservation.endTime" required />
+            <input id="endTime" v-model="reservation.endTime" @input="handleEndTimeInput" required placeholder="HH:mm" />
           </div>
           <div class="modal-footer">
             <button type="submit" class="submit-button">Confirmar Reserva</button>
@@ -32,6 +32,7 @@
     </div>
   </Transition>
 </template>
+
 
 <script setup>
 import { ref } from 'vue'
@@ -56,7 +57,30 @@ const submitReservation = () => {
 
   emit('submit', { ...reservation.value, roomId: props.room.id })
 }
+
+const formatTime = (time) => {
+  let formatted = time.replace(/[^0-9:]/g, ''); 
+
+  if (formatted.length > 5) {
+    formatted = formatted.slice(0, 5);
+  }
+
+  if (formatted.length > 2 && formatted[2] !== ':') {
+    formatted = formatted.slice(0, 2) + ':' + formatted.slice(2);
+  }
+
+  return formatted;
+}
+
+const handleStartTimeInput = (e) => {
+  reservation.value.startTime = formatTime(e.target.value);
+}
+
+const handleEndTimeInput = (e) => {
+  reservation.value.endTime = formatTime(e.target.value);
+}
 </script>
+
 
 <style scoped>
 .modal-overlay {
