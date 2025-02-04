@@ -5,8 +5,9 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import listPlugin from '@fullcalendar/list'
 import interactionPlugin from '@fullcalendar/interaction'
 import ptLocale from '@fullcalendar/core/locales/pt-br'
-import { apiGetAllMeetings, apiGetUserMeetings } from '@/http'
+import { apiGetAllMeetings } from '@/http'
 import { toast } from 'vue3-toastify'
+import { apiActiveMeetings } from '@/http/get-active-meetings'
 
 export default {
   components: {
@@ -27,7 +28,7 @@ export default {
         },
         localeText: {
           weekText: 'Semana',
-          dayNamesShort: ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'],
+          dayNamesShort: ['dom', 'seg', 'ter', 'qua', 'qui', 'sexta', 'sáb'],
           dayNames: ['domingo', 'segunda-feira', 'terça-feira', 'quarta-feira', 'quinta-feira', 'sexta-feira', 'sábado'],
         },
       },
@@ -43,7 +44,7 @@ export default {
 
     async fetchMeetings() {
       try {
-        const data = await apiGetAllMeetings(); 
+        const data = await apiActiveMeetings(); 
         const formattedEvents = data.map((event) => ({
           title: event.title,
           start: `${event.date}T${event.start_time}`,
