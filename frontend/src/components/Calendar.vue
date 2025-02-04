@@ -17,73 +17,70 @@ export default {
       calendarOptions: {
         plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
         locale: ptLocale,
-        localeText: {
-          weekText: 'Semana',
-          // Customizando as abreviações dos dias da semana
-          dayNamesShort: ['dom', 'seg', 'ter', 'qua', 'qui', 'sex.', 'sáb'],  // Correção aqui
-        },
         initialView: 'dayGridWeek',
         events: [],
         eventClick: this.handleEventClick,
+        headerToolbar: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridWeek,timeGridDay,listWeek'
+        },
+        localeText: {
+          weekText: 'Semana',
+          dayNamesShort: ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'],
+          dayNames: ['domingo', 'segunda-feira', 'terça-feira', 'quarta-feira', 'quinta-feira', 'sexta-feira', 'sábado'],
+        },
       },
       showEventModal: false,
       selectedEventDetails: null,
-    }
+    };
   },
   methods: {
     alterarVisualizacao(view) {
       const calendarApi = this.$refs.fullCalendar.getApi();
-      calendarApi.changeView(view)
+      calendarApi.changeView(view);
     },
 
     async fetchMeetings() {
       try {
-        const data = await apiGetAllMeetings();  // Chama a função que retorna todas as reuniões
-        //console.log('Dados das reuniões:', data);
-
+        const data = await apiGetAllMeetings(); 
         const formattedEvents = data.map((event) => ({
           title: event.title,
           start: `${event.date}T${event.start_time}`,
           end: `${event.date}T${event.end_time}`,
-          extendedProps: {  // As propriedades estendidas para passar mais dados ao clicar no evento
+          extendedProps: {  
             date: event.date,
             title: event.title,
-            description: event.description,  // Adiciona a descrição
-            user: event.user, // Adiciona o organizador
-            room: event.room, // Adiciona a sala
+            description: event.description,  
+            user: event.user, 
+            room: event.room,
           },
         }));
-
         this.calendarOptions.events = formattedEvents;
       } catch (error) {
         toast.error('Erro ao buscar eventos:', error.response?.data?.message || error.message);
       }
     },
 
-    // Função que será chamada ao clicar no evento
     handleEventClick(info) {
-      //console.log('Evento clicado:', info);
-      const eventDetails = info.event.extendedProps; // Pega as propriedades estendidas do evento
+      const eventDetails = info.event.extendedProps;
       this.openModalWithEventDetails(eventDetails);
     },
 
-    // Abre o modal com as informações do evento
     openModalWithEventDetails(eventDetails) {
       this.selectedEventDetails = eventDetails;
       this.showEventModal = true;
     },
 
-    // Fecha o modal de eventos
     closeEventModal() {
       this.showEventModal = false;
       this.selectedEventDetails = null;
     },
 
-    // Função para formatar a data no formato brasileiro (DD/MM/AAAA)
     formatDate(dateString) {
-      const date = new Date(dateString + 'T00:00:00Z'); // Força a data para UTC
+      const date = new Date(dateString + 'T00:00:00Z'); 
       const day = String(date.getUTCDate()).padStart(2, '0');
-      const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Janeiro é 0
+      const month = String(date.getUTCMonth() + 1).padStart(2, '0'); 
       const year = date.getUTCFullYear();
       return `${day}/${month}/${year}`;
     },
@@ -91,8 +88,6 @@ export default {
 
   async mounted() {
     await this.fetchMeetings();
-
-    // Registra manualmente o evento caso o evento click não esteja sendo detectado
     const calendarApi = this.$refs.fullCalendar.getApi();
     calendarApi.on('eventClick', this.handleEventClick);
   },
@@ -112,7 +107,6 @@ export default {
       ref="fullCalendar"
     />
 
-    <!-- Modal para exibir detalhes do evento -->
     <div v-if="showEventModal" class="modal-overlay">
       <div class="modal">
         <h2>{{ selectedEventDetails?.title }}</h2>
@@ -148,9 +142,8 @@ export default {
     }
   }
 
-  /* Estilos para o modal */
   .modal-overlay {
-    position: fixed; /* Usar fixed para garantir que a sobreposição cubra toda a tela */
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;

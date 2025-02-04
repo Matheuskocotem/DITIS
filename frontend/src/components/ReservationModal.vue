@@ -5,8 +5,8 @@ const props = defineProps({
   show: Boolean,
   date: String,
   availableTimes: Array,
-  rooms: Array, // Propriedade para salas disponíveis
-  existingMeetings: Array, // Reuniões existentes no dia
+  rooms: Array, 
+  existingMeetings: Array, 
 })
 
 const emit = defineEmits(['close', 'save'])
@@ -14,9 +14,8 @@ const emit = defineEmits(['close', 'save'])
 const meetingName = ref('')
 const startTime = ref('')
 const endTime = ref('')
-const selectedRoom = ref('') // Variável para armazenar a sala selecionada
+const selectedRoom = ref('') 
 
-// Gerar os horários disponíveis entre 8:00 e 17:00
 const generateAvailableTimes = () => {
   const times = []
   for (let hour = 8; hour <= 17; hour++) {
@@ -28,9 +27,7 @@ const generateAvailableTimes = () => {
 
 const availableTimes = generateAvailableTimes()
 
-// Função para verificar conflitos de horário
 const hasConflict = (start, end, roomId) => {
-  // Verifica se já existe uma reunião no horário e sala selecionados
   const conflicts = props.existingMeetings.filter(meeting => {
     const meetingStart = new Date(meeting.date + ' ' + meeting.start_time)
     const meetingEnd = new Date(meeting.date + ' ' + meeting.end_time)
@@ -47,7 +44,6 @@ const hasConflict = (start, end, roomId) => {
 }
 
 const save = () => {
-  // Verifica se há conflito
   if (hasConflict(startTime.value, endTime.value, selectedRoom.value)) {
     alert('Conflito de horário com outra reunião.')
     return
@@ -58,7 +54,7 @@ const save = () => {
     date: props.date,
     startTime: startTime.value,
     endTime: endTime.value,
-    room: selectedRoom.value // Incluindo a sala selecionada nos dados a serem emitidos
+    room: selectedRoom.value 
   })
   resetForm()
 }
@@ -67,14 +63,13 @@ const resetForm = () => {
   meetingName.value = ''
   startTime.value = ''
   endTime.value = ''
-  selectedRoom.value = '' // Resetando a sala selecionada
+  selectedRoom.value = ''
 }
 
-// Função para formatar a data no formato brasileiro (DD/MM/AAAA)
 const formatDate = (dateString) => {
   const date = new Date(dateString)
   const day = String(date.getDate()).padStart(2, '0')
-  const month = String(date.getMonth() + 1).padStart(2, '0') // Janeiro é 0
+  const month = String(date.getMonth() + 1).padStart(2, '0') 
   const year = date.getFullYear()
   return `${day}/${month}/${year}`
 }

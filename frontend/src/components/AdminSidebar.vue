@@ -10,7 +10,6 @@
       </RouterLink>
       <RouterLink to="/roomsAdmin" class="nav-item">
         <Building class="icon" />
-        <!-- Alterado para Building -->
         <span>Salas</span>
       </RouterLink>
       <RouterLink to="/meetingsadmin" class="nav-item">
@@ -46,10 +45,11 @@ import {
   Building,
   UserCircle,
   UserPlus,
-  LogOut,
-} from "lucide-vue-next";
-import { toast } from "vue3-toastify";
-import { apiLogout } from "@/http";
+  LogOut
+} from "lucide-vue-next";  // Importação dos ícones correta
+
+import { toast } from "vue3-toastify";  // Importação do Toast para notificações
+import { apiLogout } from "@/http";  // Importação da função de logout
 
 const showProfileMenu = ref(false);
 const router = useRouter();
@@ -60,7 +60,7 @@ const toggleProfileMenu = () => {
 
 const logout = async () => {
   try {
-    await apiLogout();
+    await apiLogout();  // Chama a função para logout
     localStorage.removeItem("token");
     toast.success("Logout realizado com sucesso!", { autoClose: 10000 });
     router.push("/login");

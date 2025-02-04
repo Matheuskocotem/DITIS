@@ -97,6 +97,6 @@ class MeetingRepository
     {
         return Meeting::where('room_id', $roomId)
             ->whereBetween('start_time', [$startOfDay, $endOfDay])
-            ->get();  // Retorna as reservas dentro do intervalo de tempo
+            ->get();  
     }
 }

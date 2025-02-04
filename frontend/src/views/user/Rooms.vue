@@ -25,17 +25,16 @@ import { ref, onMounted } from 'vue';
 import RoomList from './components/RoomList.vue';
 import ReservationModal from './components/ReservationModal.vue';
 import SideBar from '@/components/Sidebar.vue';
-import { apiCreateMeeting, apiGetMeetingRooms, apiGetAllMeetings } from '@/http'; // Importa a função para obter as reuniões
+import { apiCreateMeeting, apiGetMeetingRooms, apiGetAllMeetings } from '@/http'; 
 import { toast } from 'vue3-toastify';
 
 const rooms = ref([]);
 const showReservationModal = ref(false);
 const selectedRoom = ref(null);
-const loading = ref(false); // Estado para o carregamento das salas
+const loading = ref(false); 
 
-// Função para carregar as salas de reunião
 const fetchRooms = async () => {
-  loading.value = true; // Ativa o carregamento
+  loading.value = true; 
   try {
     const data = await apiGetMeetingRooms();     
     rooms.value = data;
@@ -45,44 +44,51 @@ const fetchRooms = async () => {
       { autoClose: 5000 }
     );
   } finally {
-    loading.value = false; // Desativa o carregamento
+    loading.value = false;
   }
 };
 
-// Abre o modal de reserva e define a sala selecionada
 const openReservationModal = (room) => {
   selectedRoom.value = room;
   showReservationModal.value = true;
 };
 
-// Fecha o modal de reserva
+
 const closeReservationModal = () => {
   showReservationModal.value = false;
   selectedRoom.value = null;
 };
 
-// Função para submeter a reserva
+
 const submitReservation = async (value) => {
-  // Validação simples para garantir que todos os campos necessários estão preenchidos
+
   if (!value.title || !value.description || !value.date || !value.startTime || !value.endTime) {
     toast.error('Preencha todos os campos obrigatórios.', { autoClose: 5000 });
     return;
   }
 
-  // Verifica se já existe uma reunião na mesma sala e horário
-  const allMeetings = await apiGetAllMeetings(); // Obtem todas as reuniões
+
+  const allMeetings = await apiGetAllMeetings();
+
+
   const isRoomAvailable = !allMeetings.some((meeting) => {
-    // Verifica se a sala e o horário coincidem
+    const meetingStart = new Date(meeting.date + ' ' + meeting.start_time); 
+    const meetingEnd = new Date(meeting.date + ' ' + meeting.end_time);
+    const newStart = new Date(value.date + ' ' + value.startTime); 
+    const newEnd = new Date(value.date + ' ' + value.endTime);
+
     return (
-      meeting.room_id === value.roomId &&
-      ((meeting.start_time >= value.startTime && meeting.start_time < value.endTime) || 
-      (meeting.end_time > value.startTime && meeting.end_time <= value.endTime))
+      meeting.room_id === value.roomId && 
+
+      ((meetingStart < newEnd && meetingStart >= newStart) || 
+      (meetingEnd > newStart && meetingEnd <= newEnd) || 
+      (newStart < meetingStart && newEnd > meetingEnd)) 
     );
   });
 
   if (!isRoomAvailable) {
-    toast.error('A sala já está reservada para esse horário.', { autoClose: 5000 });
-    return; // Não submete a reserva se a sala estiver ocupada
+    toast.error('A sala já está reservada para este horário.', { autoClose: 5000 });
+    return;
   }
 
   const payload = {
@@ -95,15 +101,15 @@ const submitReservation = async (value) => {
   };
 
   try {
-    await apiCreateMeeting(payload); // Chama a API para criar a reunião
+    await apiCreateMeeting(payload); 
     toast.success('Reserva submetida', { autoClose: 5000 });
-    closeReservationModal(); // Fecha o modal após sucesso
+    closeReservationModal(); 
   } catch (error) {
     toast.error(`Erro ao submeter reserva: ${error.response?.data?.message || error.message || 'Erro desconhecido'}`);
   }
 };
 
-// Chama a função para buscar as salas ao montar o componente
+
 onMounted(fetchRooms);
 </script>
 

@@ -36,11 +36,15 @@
         <form @submit.prevent="handleSubmit" id="addMeeting">
           <div class="form-group">
             <label for="meetingRoom">Sala:</label>
-            <input type="number" id="meetingRoom" v-model="newMeeting.room_id" required class="form-input">
+            <select id="meetingRoom" v-model="newMeeting.room_id" required class="form-input">
+              <option v-for="room in rooms" :key="room.id" :value="room.id">{{ room.name }}</option>
+            </select>
           </div>
           <div class="form-group">
-            <label for="meetingUser">Responsável (ID do usuário):</label>
-            <input type="number" id="meetingUser" v-model="newMeeting.user_id" required class="form-input">
+            <label for="meetingUser">Responsável:</label>
+            <select id="meetingUser" v-model="newMeeting.user_id" required class="form-input">
+              <option v-for="user in users" :key="user.id" :value="user.id">{{ user.name }}</option>
+            </select>
           </div>
           <div class="form-group">
             <label for="meetingTitle">Título da Reunião:</label>
@@ -55,13 +59,17 @@
             <input type="date" id="meetingDate" v-model="newMeeting.date" required class="form-input">
           </div>
           <div class="form-group">
-            <label for="meetingStartTime">Horário de Início:</label>
-            <input id="meetingStartTime" v-model="newMeeting.start_time" required class="form-input">
-          </div>
-          <div class="form-group">
-            <label for="meetingEndTime">Horário de Término:</label>
-            <input id="meetingEndTime" v-model="newMeeting.end_time" required class="form-input">
-          </div>
+          <label for="startTime">Horário de Início:</label>
+          <select id="startTime" v-model="startTime" required>
+            <option v-for="time in availableTimes" :key="time" :value="time">{{ time }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="endTime">Horário de Término:</label>
+          <select id="endTime" v-model="endTime" required>
+            <option v-for="time in availableTimes" :key="time" :value="time">{{ time }}</option>
+          </select>
+        </div>
           <div class="form-group">
             <label for="meetingStatus">Status:</label>
             <select id="meetingStatus" v-model="newMeeting.status" required class="form-input">
@@ -95,7 +103,7 @@
 import Modal from '@/components/Modal.vue';
 import { ref, onMounted } from 'vue';
 import AdminSidebar from '@/components/AdminSidebar.vue';
-import { apiCreateMeeting, apiGetAllMeetings, apiUpdateMeeting } from '@/http';
+import { apiCreateMeeting, apiGetAllMeetings, apiUpdateMeeting, apiGetUsers, apiGetMeetingRooms } from '@/http';
 import { toast } from 'vue3-toastify';
 
 const upcomingMeetings = ref([]);
@@ -113,6 +121,9 @@ const newMeeting = ref({
   status: 'confirmed',
 });
 
+const users = ref([]);
+const rooms = ref([]);
+
 function openModal(type, meeting) {
   modalType.value = type
   showModal.value = true;
@@ -120,7 +131,7 @@ function openModal(type, meeting) {
   if (type === 'edit' && meeting) {
     editMeetingId.value = meeting.id
 
-    newMeeting.value = {...meeting}
+    newMeeting.value = { ...meeting };
   }
 }
 
@@ -155,43 +166,59 @@ function formatFetchedMeeting(meeting) {
 const fetchMeetings = async () => {
   try {
     const meetings = await apiGetAllMeetings();
-
-    upcomingMeetings.value = meetings.map(meeting => (({
+    upcomingMeetings.value = meetings.map(meeting => ({
       ...formatFetchedMeeting(meeting)
-    })));
+    }));
   } catch (error) {
     toast.error(error, { autoClose: 5000 });
   }
 };
 
-function formatPayload() {
+
+const fetchUsers = async () => {
+  try {
+    const fetchedUsers = await apiGetUsers();
+    users.value = fetchedUsers;
+  } catch (error) {
+    toast.error('Erro ao carregar usuários!', { autoClose: 5000 });
+  }
+};
+
+const fetchRooms = async () => {
+  try {
+    const fetchedRooms = await apiGetMeetingRooms();
+    rooms.value = fetchedRooms;
+  } catch (error) {
+    toast.error('Erro ao carregar salas!', { autoClose: 5000 });
+  }
+};
+
+const formatPayload = () => {
   return {
     ...newMeeting.value,
     date: new Date(newMeeting.value.date).toISOString().split('T')[0], 
   };
-}
+};
 
 function increaseMeetings(type, meeting) {
   if (type === 'add') {
     upcomingMeetings.value = [
       ...upcomingMeetings.value,
-      {...formatFetchedMeeting(meeting)}
+      { ...formatFetchedMeeting(meeting) }
     ]
   } else {
     upcomingMeetings.value = upcomingMeetings.value.map((currentMeeting) => {
       if (currentMeeting.id === meeting.id) {
-        return {...formatFetchedMeeting(meeting)};
+        return { ...formatFetchedMeeting(meeting) };
       }
-
       return currentMeeting;
-    })
+    });
   }
 }
 
 const addMeeting = async () => {
   try {
     const payload = formatPayload();
-
     const createdMeeting = await apiCreateMeeting(payload);
 
     closeModal();
@@ -206,13 +233,12 @@ const addMeeting = async () => {
 async function updateMeeting() {
   try {
     const payload = formatPayload();
+    const updatedMeeting = await apiUpdateMeeting(editMeetingId.value, payload);
 
-    const createdMeeting = await apiUpdateMeeting(editMeetingId, payload);
-
-    closeModal()
-    increaseMeetings('edit', createdMeeting);
+    closeModal();
+    increaseMeetings('edit', updatedMeeting);
     resetMeetingForm();
-    toast.success('Reunião criada com sucesso!', { autoClose: 5000 });
+    toast.success('Reunião atualizada com sucesso!', { autoClose: 5000 });
   } catch (error) {
     toast.error(error.response.data.message, { autoClose: 5000 });
   }
@@ -222,7 +248,22 @@ function handleSubmit() {
   modalType.value === 'add' ? addMeeting() : updateMeeting();
 }
 
-onMounted(fetchMeetings);
+onMounted(() => {
+  fetchMeetings();
+  fetchUsers(); 
+  fetchRooms(); 
+});
+
+const generateAvailableTimes = () => {
+  const times = []
+  for (let hour = 8; hour <= 17; hour++) {
+    const formattedHour = hour.toString().padStart(2, '0') + ':00';
+    times.push(formattedHour);
+  }
+  return times;
+};
+
+const availableTimes = generateAvailableTimes();
 </script>
 
 
@@ -230,7 +271,7 @@ onMounted(fetchMeetings);
 /* Sidebar */
 .sidebar {
   position: fixed;
-  /* Fixa a barra lateral */
+ 
   left: 0;
   top: 0;
   height: 100vh;

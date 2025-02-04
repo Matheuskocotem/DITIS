@@ -52,7 +52,6 @@ const reservation = ref({
   endTime: '',
 })
 
-// Gerar os horários disponíveis entre 8:00 e 17:00
 const generateAvailableTimes = () => {
   const times = []
   for (let hour = 8; hour <= 17; hour++) {

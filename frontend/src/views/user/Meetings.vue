@@ -56,8 +56,10 @@ export default {
   },
   methods: {
     formatMeetingDate(meeting) {
-      const date = new Date(meeting.date);
-      const formattedDate = date.toLocaleDateString('pt-BR');
+      const date = new Date(meeting.date); 
+      const formattedDate = date.toLocaleDateString('pt-BR', {
+        timeZone: 'UTC',
+      });
       const startTime = meeting.start_time.slice(0, 5);
       const endTime = meeting.end_time.slice(0, 5);
 
