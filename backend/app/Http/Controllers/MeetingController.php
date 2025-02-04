@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Meeting;
 
-
 class MeetingController extends Controller
 {
     protected $meetingService;
@@ -16,8 +15,6 @@ class MeetingController extends Controller
     {
         $this->meetingService = $meetingService;
     }
-
-
 
     public function index()
     {
@@ -53,6 +50,20 @@ class MeetingController extends Controller
     public function getMeetingsByDay($date)
     {
         return response()->json($this->meetingService->getMeetingsByDate($date));
+    }
+
+    /**
+     * Nova função para pegar as reservas de uma sala em um dia específico.
+     */
+    public function getReservationsByRoom(Request $request, $roomId, $date)
+    {
+        // Validando a data no formato correto
+        $validatedDate = Carbon::parse($date);
+
+        // Buscando as reservas da sala no dia específico
+        $reservations = $this->meetingService->getReservationsByRoom($roomId, $validatedDate);
+
+        return response()->json($reservations);
     }
 
     public function store(Request $request)
@@ -97,6 +108,7 @@ class MeetingController extends Controller
             return response()->json(['error' => true, 'message' => $e->getMessage()], 400);
         }
     }
+
     public function updateStatus(Request $request, $id)
     {
         $request->validate([

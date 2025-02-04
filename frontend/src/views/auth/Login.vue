@@ -24,8 +24,8 @@
           aria-label="Senha"
         />
         
-        <a href="forgot-password" class="forgot-password">Esqueceu sua senha?</a>
-        
+        <!-- <a href="forgot-password" class="forgot-password">Esqueceu sua senha?</a>
+         -->
         <button type="submit">Entrar</button>
       </form>
       

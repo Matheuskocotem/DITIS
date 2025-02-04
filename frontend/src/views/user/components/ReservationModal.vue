@@ -18,10 +18,14 @@
             <input type="date" id="date" v-model="reservation.date" required />
             
             <label for="startTime">Horário de Início</label>
-            <input id="startTime" v-model="reservation.startTime" required />
+            <select id="startTime" v-model="reservation.startTime" required>
+              <option v-for="time in availableTimes" :key="time" :value="time">{{ time }}</option>
+            </select>
 
             <label for="endTime">Horário de Término</label>
-            <input id="endTime" v-model="reservation.endTime" required />
+            <select id="endTime" v-model="reservation.endTime" required>
+              <option v-for="time in availableTimes" :key="time" :value="time">{{ time }}</option>
+            </select>
           </div>
           <div class="modal-footer">
             <button type="submit" class="submit-button">Confirmar Reserva</button>
@@ -47,6 +51,18 @@ const reservation = ref({
   startTime: '',
   endTime: '',
 })
+
+// Gerar os horários disponíveis entre 8:00 e 17:00
+const generateAvailableTimes = () => {
+  const times = []
+  for (let hour = 8; hour <= 17; hour++) {
+    const formattedHour = hour.toString().padStart(2, '0') + ':00'
+    times.push(formattedHour)
+  }
+  return times
+}
+
+const availableTimes = generateAvailableTimes()
 
 const submitReservation = () => {
   if (reservation.value.endTime <= reservation.value.startTime) {

@@ -20,7 +20,6 @@ class MeetingService
         return $this->meetingRepository->findMeetingById($id);
     }
 
-
     public function getAllMeetings()
     {
         return $this->meetingRepository->getAllMeetings();
@@ -124,5 +123,18 @@ class MeetingService
     {
         $meeting = $this->meetingRepository->findMeetingById($id);
         return $this->meetingRepository->deleteMeeting($meeting);
+    }
+
+    /**
+     * Função para obter as reservas de uma sala para um dia específico.
+     */
+    public function getReservationsByRoom($roomId, Carbon $date)
+    {
+        // Determinar o início e o final do dia para buscar as reservas
+        $startOfDay = $date->startOfDay();
+        $endOfDay = $date->endOfDay();
+
+        // Buscar as reservas da sala (room_id) no intervalo do dia específico
+        return $this->meetingRepository->getReservationsByRoom($roomId, $startOfDay, $endOfDay);
     }
 }

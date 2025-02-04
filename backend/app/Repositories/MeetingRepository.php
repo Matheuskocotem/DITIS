@@ -65,21 +65,20 @@ class MeetingRepository
     public function hasTimeConflict($roomId, $startTime, $endTime)
     {
         \Log::info("Verificando conflito para Sala ID: $roomId, Início: $startTime, Fim: $endTime");
-
+    
         $conflict = Meeting::where('room_id', $roomId)
             ->where('status', 'confirmed')
             ->where(function ($query) use ($startTime, $endTime) {
-                $query->where(function ($query) use ($startTime, $endTime) {
-                    $query->where('start_time', '<', $endTime)
-                        ->where('end_time', '>', $startTime);
-                });
+                $query->where('start_time', '<', $endTime)
+                      ->where('end_time', '>', $startTime);
             })
             ->exists();
-
+    
         \Log::info("Conflito encontrado: " . ($conflict ? 'Sim' : 'Não'));
-
+    
         return $conflict;
     }
+    
 
 
     public function updateMeetingStatus(Meeting $meeting, string $status)
@@ -92,5 +91,12 @@ class MeetingRepository
         $meeting->save();
 
         return $meeting;
+    }
+
+    public function getReservationsByRoom($roomId, Carbon $startOfDay, Carbon $endOfDay)
+    {
+        return Meeting::where('room_id', $roomId)
+            ->whereBetween('start_time', [$startOfDay, $endOfDay])
+            ->get();  // Retorna as reservas dentro do intervalo de tempo
     }
 }

@@ -18,6 +18,7 @@
       </thead>
       <tbody>
         <tr v-for="meeting in upcomingMeetings" :key="meeting.id">
+          <td>{{ meeting.Date }}</td>
           <td>{{ meeting.room }}</td>
           <td>{{ meeting.title }}</td>
           <td>{{ meeting.time }}</td>
