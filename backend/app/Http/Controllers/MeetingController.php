@@ -52,16 +52,14 @@ class MeetingController extends Controller
         return response()->json($this->meetingService->getMeetingsByDate($date));
     }
 
-    /**
-     * Nova função para pegar as reservas de uma sala em um dia específico.
-     */
-    public function getReservationsByRoom(Request $request, $roomId, $date)
+
+    public function getReservationsByRoom(Request $request, $roomId, $date, $status)
     {
-        // Validando a data no formato correto
+
         $validatedDate = Carbon::parse($date);
 
-        // Buscando as reservas da sala no dia específico
-        $reservations = $this->meetingService->getReservationsByRoom($roomId, $validatedDate);
+       
+        $reservations = $this->meetingService->getReservationsByRoom($roomId, $validatedDate,$status);
 
         return response()->json($reservations);
     }
