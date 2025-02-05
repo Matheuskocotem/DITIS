@@ -37,8 +37,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::put('/{id}', [MeetingController::class, 'update']);
         Route::delete('/{id}', [MeetingController::class, 'destroy']);
         Route::put('/{id}/status', [MeetingController::class, 'updateStatus']);
-        Route::get('/room-occupaprecncy/{date}', [MeetingController::class, 'getRoomOccupancy']);
+        Route::get('/room-occupancy/{date}', [MeetingController::class, 'getRoomOccupancy']);
         Route::get('/reservations-by-day/{id}', [MeetingController::class, 'getReservationsByDay']);
+        Route::get('/active', [MeetingController::class, 'getActiveMeetings']);
     });
 
     Route::middleware(['role:admin'])->prefix('users')->group(function () {

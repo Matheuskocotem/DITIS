@@ -17,6 +17,12 @@ class MeetingRepository
         return Meeting::whereDate('date', $date->format('Y-m-d'))->get();
     }
 
+    public function getActiveMeetings()
+    {
+        return Meeting::where('status','confirmed')
+                        ->get();
+    }
+
     public function getRoomOccupancyByDate($date)
     {
         return Meeting::whereDate('date', $date)

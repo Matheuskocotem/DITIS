@@ -25,6 +25,11 @@ class MeetingService
         return $this->meetingRepository->getAllMeetings();
     }
 
+    public function getActiveMeetings()
+    {
+        return $this ->meetingRepository->getActiveMeetings();
+    }
+
     public function getMeetingsByDate($date)
     {
         $validatedDate = Carbon::parse($date);

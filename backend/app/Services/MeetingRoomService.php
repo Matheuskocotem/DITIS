@@ -81,15 +81,15 @@ class MeetingRoomService
     }
 
 private function validateRequest(Request $request, $isUpdate = false)
-{
-    $rules = [
-        'nome' => $isUpdate ? 'sometimes|required|string|max:255' : 'required|string|max:255',
-        'localizacao' => $isUpdate ? 'sometimes|required|string|max:255' : 'required|string|max:255',
-        'capacidade' => $isUpdate ? 'sometimes|required|integer' : 'required|integer',
-        'recursos' => 'nullable|array',
-        'descricao' => 'nullable|string',
-    ];
+    {
+        $rules = [
+            'nome' => $isUpdate ? 'sometimes|required|string|max:255' : 'required|string|max:255',
+            'localizacao' => $isUpdate ? 'sometimes|required|string|max:255' : 'required|string|max:255',
+            'capacidade' => $isUpdate ? 'sometimes|required|integer' : 'required|integer',
+            'recursos' => 'nullable|array',
+            'descricao' => 'nullable|string',
+        ];
 
-    $request->validate($rules);
-}
+        $request->validate($rules);
+    }
 }
