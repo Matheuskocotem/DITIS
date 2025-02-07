@@ -19,7 +19,8 @@ class MeetingRepository
 
     public function getActiveMeetings()
     {
-        return Meeting::where('status','confirmed')
+        return Meeting::with('user','room')->
+                        where('status','confirmed')
                         ->get();
     }
 

@@ -28,6 +28,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         });
     });
 
+    Route::get('/meetings-active', [MeetingController::class, 'getActiveMeetings']);
     Route::prefix('meetings')->group(function () {
         Route::get('/day/{date}', [MeetingController::class, 'getMeetingsByDay']);
         Route::get('/', [MeetingController::class, 'index']);
@@ -38,8 +39,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::delete('/{id}', [MeetingController::class, 'destroy']);
         Route::put('/{id}/status', [MeetingController::class, 'updateStatus']);
         Route::get('/room-occupancy/{date}', [MeetingController::class, 'getRoomOccupancy']);
-        Route::get('/reservations-by-day/{id}', [MeetingController::class, 'getReservationsByDay']);
-        Route::get('/active', [MeetingController::class, 'getActiveMeetings']);
+        Route::get('/reservations-by-day/{date}', [MeetingController::class, 'getReservationsByDay']);
+        
     });
 
     Route::middleware(['role:admin'])->prefix('users')->group(function () {

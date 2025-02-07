@@ -23,7 +23,14 @@ class MeetingController extends Controller
 
     public function getActiveMeetings()
     {
-        return response() ->json($this->meetingService->getActiveMeetings());
+        try
+        {
+            $meetings = $this->meetingService->getActiveMeetings();
+            return response() ->json($meetings);
+        } catch (\Exception $error) {
+            return response()-> json(['erro'=>$error->getMessage()],500);
+        }
+
     }
 
     public function getRoomOccupancy($date)

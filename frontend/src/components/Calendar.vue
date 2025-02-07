@@ -18,7 +18,7 @@ export default {
       calendarOptions: {
         plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
         locale: ptLocale,
-        initialView: 'dayGridWeek',
+        initialView: 'listWeek',
         events: [],
         eventClick: this.handleEventClick,
         headerToolbar: {
@@ -26,11 +26,11 @@ export default {
           center: 'title',
           right: 'dayGridWeek,timeGridDay,listWeek'
         },
-        localeText: {
+        /*localeText: {
           weekText: 'Semana',
           dayNamesShort: ['dom', 'seg', 'ter', 'qua', 'qui', 'sexta', 'sáb'],
           dayNames: ['domingo', 'segunda-feira', 'terça-feira', 'quarta-feira', 'quinta-feira', 'sexta-feira', 'sábado'],
-        },
+        },*/
       },
       showEventModal: false,
       selectedEventDetails: null,
@@ -98,7 +98,7 @@ export default {
 <template>
   <div>
     <div class="change-period">
-      <button @click="alterarVisualizacao('dayGridWeek')" class="change-period-btn">Semana</button>
+      <!--<button @click="alterarVisualizacao('dayGridWeek')" class="change-period-btn">Semana</button>-->
       <button @click="alterarVisualizacao('timeGridDay')" class="change-period-btn">Dia</button>
       <button @click="alterarVisualizacao('listWeek')" class="change-period-btn">Lista Semanal</button>
     </div>
