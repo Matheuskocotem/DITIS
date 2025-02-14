@@ -14,14 +14,7 @@
           </div>
           <div class="action-container">
             <BadgeStatus :status="meeting.status" />
-            <button
-              v-if="meeting.status === 'canceled'"
-              class="restore-btn"
-              @click="updateStatus(meeting.id, 'confirmed')"
-            >
-              Reativar
-            </button>
-            <button v-else class="cancel-btn" @click="updateStatus(meeting.id, 'canceled')">
+            <button class="cancel-btn" @click="deleteMeeting(meeting.id)">
               Cancelar
             </button>
           </div>
@@ -40,6 +33,7 @@ import SideBar from '@/components/Sidebar.vue';
 import { apiGetUserMeetings, apiUpdateStatus } from '@/http';
 import { toast } from 'vue3-toastify';
 import BadgeStatus from './components/BadgeStatus.vue'
+import { apiDeleteMeeting } from '@/http/delete-meeting';
 
 export default {
   components: {
@@ -95,8 +89,19 @@ export default {
       } catch(error) {
         toast.error(error.response.data.message);
       }
+    },
+    async deleteMeeting(id){
+      try {
+        await apiDeleteMeeting(id);
+        toast.success('Reunião deletada com sucesso', {autoClose: 5000});
+        this.fetchMeetings();
+        
+      } catch(error){
+         toast.error("Erro ao cancelar Reunião", {autoClose: 5000});
+      }
     }
   },
+
 };
 </script>
 

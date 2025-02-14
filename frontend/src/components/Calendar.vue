@@ -9,6 +9,13 @@ import { apiGetAllMeetings } from '@/http'
 import { toast } from 'vue3-toastify'
 import { apiActiveMeetings } from '@/http/get-active-meetings'
 
+
+const roomColors = {
+    'Sala de Reuniões 3º Andar':'#2E64FE',
+    'Sala de Reuniões CEO Piso superior':'#21610B'
+  };
+
+
 export default {
   components: {
     FullCalendar
@@ -24,7 +31,7 @@ export default {
         headerToolbar: {
           left: 'prev,next today',
           center: 'title',
-          right: 'dayGridWeek,timeGridDay,listWeek'
+          right: /*dayGridWeek,*/'timeGridDay,listWeek'
         },
         /*localeText: {
           weekText: 'Semana',
@@ -41,11 +48,14 @@ export default {
       const calendarApi = this.$refs.fullCalendar.getApi();
       calendarApi.changeView(view);
     },
-
+  
     async fetchMeetings() {
       try {
         const data = await apiActiveMeetings(); 
-        const formattedEvents = data.map((event) => ({
+        const formattedEvents = data.map((event) => {
+          const roomColor = roomColors[event.room?.nome] || '#CCCCCC'
+
+          return{
           title: event.title,
           start: `${event.date}T${event.start_time}`,
           end: `${event.date}T${event.end_time}`,
@@ -55,8 +65,12 @@ export default {
             description: event.description,  
             user: event.user, 
             room: event.room,
-          },
-        }));
+            },
+            backgroundColor: roomColor,
+            borderColor: roomColor,
+           
+          };
+        });
         this.calendarOptions.events = formattedEvents;
       } catch (error) {
         toast.error('Erro ao buscar eventos:', error.response?.data?.message || error.message);
@@ -84,6 +98,13 @@ export default {
       const month = String(date.getUTCMonth() + 1).padStart(2, '0'); 
       const year = date.getUTCFullYear();
       return `${day}/${month}/${year}`;
+    },
+
+    formatTime(timeString) {
+      const date = new Date(`1970-01-01T${timeString}:00Z`);
+      const hours = String(date.getUTCHours()).padStart(2, '0');
+      const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+      return `${hours}:${minutes}`;
     },
   },
 
@@ -115,7 +136,7 @@ export default {
         <p><strong>Organizador:</strong> {{ selectedEventDetails?.user?.name }}</p>
         <p><strong>Descrição:</strong> {{ selectedEventDetails?.description || 'Sem descrição' }}</p>
         <p><strong>Sala:</strong> {{ selectedEventDetails?.room?.nome }} - {{ selectedEventDetails?.room?.localizacao }}</p>
-        <button @click="closeEventModal">Fechar</button>
+        <button @click="closeEventModal" class="change-period-btn">Fechar</button>
       </div>
     </div>
   </div>
@@ -169,6 +190,33 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content:center; 
+    -webkit-animation: scale-in-center 0.7s;
+    animation: scale-in-center 0.7s;
+  }
+
+  @-webkit-keyframes scale-in-center {
+    0% {
+      -webkit-transform: scale(0);
+              transform: scale(0);
+      opacity: 1;
+    }
+    100% {
+      -webkit-transform: scale(1);
+              transform: scale(1);
+      opacity: 1;
+    }
+  }
+  @keyframes scale-in-center {
+    0% {
+      -webkit-transform: scale(0);
+              transform: scale(0);
+      opacity: 1;
+    }
+    100% {
+      -webkit-transform: scale(1);
+              transform: scale(1);
+      opacity: 1;
+    }
   }
 
   button {
