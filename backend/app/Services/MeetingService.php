@@ -71,22 +71,30 @@ class MeetingService
 
     public function createMeeting(array $data)
     {
+        $date = Carbon::createFromFormat('Y-m-d', $data['date'])->setTimezone('America/Sao_Paulo');
         $startTime = Carbon::createFromFormat('Y-m-d H:i', $data['date'] . ' ' . $data['start_time'])->setTimezone('America/Sao_Paulo');
         $endTime = Carbon::createFromFormat('Y-m-d H:i', $data['date'] . ' ' . $data['end_time'])->setTimezone('America/Sao_Paulo');
 
         $data['date'] = $startTime->format('Y-m-d');
 
-        if ($this->meetingRepository->hasTimeConflict($data['room_id'], $startTime, $endTime)) {
-            throw new \Exception('Conflito de horário com outra reunião.');
+        if($date->isPast() || $startTime->isPast()){
+            throw new \Exception('A data e a hora não podem ser no passado.');
         }
 
+        if ($this->meetingRepository->hasTimeConflict($data['room_id'], $date, $startTime, $endTime)) {
+            throw new \Exception('Conflito de horário com outra reunião.');
+        }
+        
         $room = $this->meetingRepository->findRoomById($data['room_id']);
         if (!$room) {
             throw new \Exception('Sala não encontrada.');
         }
 
         $data['user_id'] = Auth::id();
-
+        
+        if ($this->meetingRepository->isWeekend($date)){
+            session()->flash('warning', 'Você está agendando uma reunião para o fim de semana. Verifique se é necessário.');
+        }
         return $this->meetingRepository->createMeeting($data);
     }
 
@@ -98,13 +106,14 @@ class MeetingService
     public function updateMeeting($id, array $data)
     {
         $meeting = $this->meetingRepository->findMeetingById($id);
-
+    
         if (!$meeting) {
             throw new \Exception('Reunião não encontrada.');
         }
-
+    
         $startTime = Carbon::createFromFormat('Y-m-d H:i', $data['date'] . ' ' . $data['start_time'])->setTimezone('America/Sao_Paulo');
         $endTime = Carbon::createFromFormat('Y-m-d H:i', $data['date'] . ' ' . $data['end_time'])->setTimezone('America/Sao_Paulo');
+
 
         if ($this->meetingRepository->hasTimeConflict($data['room_id'], $startTime, $endTime)) {
             throw new \Exception('Conflito de horário com outra reunião.');
@@ -130,16 +139,4 @@ class MeetingService
         return $this->meetingRepository->deleteMeeting($meeting);
     }
 
-    /**
-     * Função para obter as reservas de uma sala para um dia específico.
-     */
-    public function getReservationsByRoom($roomId, Carbon $date)
-    {
-        // Determinar o início e o final do dia para buscar as reservas
-        $startOfDay = $date->startOfDay();
-        $endOfDay = $date->endOfDay();
-
-        // Buscar as reservas da sala (room_id) no intervalo do dia específico
-        return $this->meetingRepository->getReservationsByRoom($roomId, $startOfDay, $endOfDay);
-    }
 }
