@@ -219,6 +219,20 @@ export default {
     }
   }
 
+  .modal-leave-active {
+  animation: fadeOut 0.5s ease-in;
+  }
+
+  @keyframes fadeOut {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+
   button {
     margin-top: 20px; 
     width: 100%;

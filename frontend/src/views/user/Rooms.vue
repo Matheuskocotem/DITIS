@@ -9,13 +9,14 @@
         :rooms="rooms" 
         @open-reservation="openReservationModal"
       />
-
-      <ReservationModal 
-        v-if="showReservationModal"
-        :room="selectedRoom"
-        @close="closeReservationModal"
-        @submit="submitReservation"
-      />
+      <Transition name="modal">
+        <ReservationModal 
+          v-if="showReservationModal"
+          :room="selectedRoom"
+          @close="closeReservationModal"
+          @submit="submitReservation"
+        />
+      </Transition>
     </div>
   </div>
 </template>
@@ -79,10 +80,9 @@ const submitReservation = async (value) => {
 
     return (
       meeting.room_id === value.roomId && 
-
       ((meetingStart < newEnd && meetingStart >= newStart) || 
       (meetingEnd > newStart && meetingEnd <= newEnd) || 
-      (newStart < meetingStart && newEnd > meetingEnd)) 
+      (newStart < meetingStart && newEnd > meetingEnd))
     );
   });
 
@@ -162,4 +162,45 @@ button {
 button:hover {
   background-color: #434190;
 }
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+
+  }
+  100% {
+    opacity: 1;
+
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+
+  }
+  100% {
+    opacity: 0;
+
+  }
+}
+
+.modal-enter-active{
+  animation: fadeIn 0.5s ease-out;
+}
+
+.modal-leave-active{
+  animation: fadeOut 0.5s ease-out;
+}
+
+.modal-enter, .modal-leave-to {
+  opacity: 0;
+
+}
+
+.modal-leave-to{
+  opacity: 0;
+
+}
+
 </style>

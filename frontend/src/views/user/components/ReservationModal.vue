@@ -15,7 +15,7 @@
             <input id="startTime" v-model="reservation.description" required />
 
             <label for="date">Data</label>
-            <input type="date" id="date" v-model="reservation.date" required />
+            <input type="date" id="date" v-model="reservation.date" @input="checkWeekend" required />
             
             <label for="startTime">Horário de Início</label>
             <select id="startTime" v-model="reservation.startTime" required>
@@ -71,6 +71,17 @@ const submitReservation = () => {
 
   emit('submit', { ...reservation.value, roomId: props.room.id })
 }
+
+const checkWeekend = () =>{
+  const selectedDate = new Date(reservation.value.date)
+  const dayOfWeek = selectedDate.getDay();
+
+  if (dayOfWeek == 5 || dayOfWeek == 6){
+    toast.warning('Você selecionou um fim de semana, verifique se é isso mesmo')
+  }
+}
+
+
 </script>
 
 <style scoped>

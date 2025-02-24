@@ -11,6 +11,7 @@
         <tr>
           <th>Sala</th>
           <th>Titulo</th>
+          <th>Data</th>
           <th>Horário</th>
           <th>Responsável</th>
           <th>Ações</th>
@@ -18,14 +19,14 @@
       </thead>
       <tbody>
         <tr v-for="meeting in upcomingMeetings" :key="meeting.id">
-          <td>{{ meeting.Date }}</td>
           <td>{{ meeting.room }}</td>
           <td>{{ meeting.title }}</td>
+          <td>{{ meeting.date }}</td>
           <td>{{ meeting.time }}</td>
           <td>{{ meeting.organizer }}</td>
           <td>
             <button class="btn btn-edit" @click="openModal('edit', meeting)">Editar</button>
-            <button class="btn btn-delete" @click="deleteMeeting(meeting.id)">Cancelar</button>
+            <button class="btn btn-delete" @click="deleteMeeting(meeting.id)">Deletar</button>
           </td>
         </tr>
       </tbody>
@@ -37,7 +38,7 @@
           <div class="form-group">
             <label for="meetingRoom">Sala:</label>
             <select id="meetingRoom" v-model="newMeeting.room_id" required class="form-input">
-              <option v-for="room in rooms" :key="room.id" :value="room.id">{{ room.name }}</option>
+              <option v-for="room in rooms" :key="room.id" :value="room.id">{{ room.nome }}</option>
             </select>
           </div>
           <div class="form-group">
@@ -56,25 +57,18 @@
           </div>
           <div class="form-group">
             <label for="meetingDate">Data:</label>
-            <input type="date" id="meetingDate" v-model="newMeeting.date" required class="form-input">
+            <input type="date" id="meetingDate" v-model="newMeeting.date" @input="checkWeekend" required class="form-input">
           </div>
           <div class="form-group">
-          <label for="startTime">Horário de Início:</label>
-          <select id="startTime" v-model="startTime" required>
-            <option v-for="time in availableTimes" :key="time" :value="time">{{ time }}</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="endTime">Horário de Término:</label>
-          <select id="endTime" v-model="endTime" required>
-            <option v-for="time in availableTimes" :key="time" :value="time">{{ time }}</option>
-          </select>
-        </div>
+            <label for="meetingStartTime">Horário de Início:</label>
+            <select id="meetingStartTime" v-model="newMeeting.start_time" required class="form-input">
+              <option v-for="hour in availableHours" :key="hour" :value="hour">{{ hour }}</option>
+            </select>
+          </div>
           <div class="form-group">
-            <label for="meetingStatus">Status:</label>
-            <select id="meetingStatus" v-model="newMeeting.status" required class="form-input">
-              <option value="confirmed">Confirmada</option>
-              <option value="canceled">Cancelada</option>
+            <label for="meetingEndTime">Horário de Término:</label>
+            <select id="meetingEndTime" v-model="newMeeting.end_time" required class="form-input">
+              <option v-for="hour in availableHours" :key="hour" :value="hour">{{ hour }}</option>
             </select>
           </div>
         </form>
@@ -104,6 +98,7 @@ import Modal from '@/components/Modal.vue';
 import { ref, onMounted } from 'vue';
 import AdminSidebar from '@/components/AdminSidebar.vue';
 import { apiCreateMeeting, apiGetAllMeetings, apiUpdateMeeting, apiGetUsers, apiGetMeetingRooms } from '@/http';
+import { apiDeleteMeeting } from '@/http/delete-meeting';
 import { toast } from 'vue3-toastify';
 
 const upcomingMeetings = ref([]);
@@ -121,8 +116,18 @@ const newMeeting = ref({
   status: 'confirmed',
 });
 
-const users = ref([]);
-const rooms = ref([]);
+const availableHours = ref([]);
+
+function generateAvailableHours() {
+  const hours = [];
+  const times = []
+  for (let hour = 8; hour <= 17; hour++) {
+    const formattedHour = hour.toString().padStart(2, '0') + ':00'
+    times.push(formattedHour)
+  }   
+   return availableHours.value = times;
+}
+
 
 function openModal(type, meeting) {
   modalType.value = type
@@ -131,7 +136,7 @@ function openModal(type, meeting) {
   if (type === 'edit' && meeting) {
     editMeetingId.value = meeting.id
 
-    newMeeting.value = { ...meeting };
+    newMeeting.value = {...meeting}
   }
 }
 
@@ -163,64 +168,100 @@ function formatFetchedMeeting(meeting) {
   }
 }
 
+const users = ref([]);
+
+const fetchUsers = async () => {
+  try {
+    const data = await apiGetUsers();
+    users.value = data.users;
+  } catch (error) {
+    toast.error(`Erro ao carregar usuários: ${(error.response?.data?.message || "Erro desconhecido.")}`);
+  }
+};
+
+const rooms = ref([])
+
+onMounted(async () => {
+  try {
+    const data = await apiGetMeetingRooms();
+    rooms.value = data;
+  } catch (error) {
+    toast.error(`Erro ao carregar salas: ${error}`, { autoClose: 5000 });
+  }
+});
+
+onMounted(() => {
+  fetchUsers();
+});
+
+
 const fetchMeetings = async () => {
   try {
     const meetings = await apiGetAllMeetings();
-    upcomingMeetings.value = meetings.map(meeting => ({
+
+    upcomingMeetings.value = meetings.map(meeting => (({
       ...formatFetchedMeeting(meeting)
-    }));
+    })));
   } catch (error) {
     toast.error(error, { autoClose: 5000 });
   }
 };
 
-
-const fetchUsers = async () => {
-  try {
-    const fetchedUsers = await apiGetUsers();
-    users.value = fetchedUsers;
-  } catch (error) {
-    toast.error('Erro ao carregar usuários!', { autoClose: 5000 });
-  }
-};
-
-const fetchRooms = async () => {
-  try {
-    const fetchedRooms = await apiGetMeetingRooms();
-    rooms.value = fetchedRooms;
-  } catch (error) {
-    toast.error('Erro ao carregar salas!', { autoClose: 5000 });
-  }
-};
-
-const formatPayload = () => {
+function formatPayload() {
   return {
     ...newMeeting.value,
     date: new Date(newMeeting.value.date).toISOString().split('T')[0], 
   };
-};
+}
 
 function increaseMeetings(type, meeting) {
   if (type === 'add') {
     upcomingMeetings.value = [
       ...upcomingMeetings.value,
-      { ...formatFetchedMeeting(meeting) }
+      {...formatFetchedMeeting(meeting)}
     ]
   } else {
     upcomingMeetings.value = upcomingMeetings.value.map((currentMeeting) => {
       if (currentMeeting.id === meeting.id) {
-        return { ...formatFetchedMeeting(meeting) };
+        return {...formatFetchedMeeting(meeting)};
       }
+
       return currentMeeting;
-    });
+    })
   }
 }
 
 const addMeeting = async () => {
-  try {
-    const payload = formatPayload();
-    const createdMeeting = await apiCreateMeeting(payload);
+  if (!newMeeting.value.title || !newMeeting.value.description || !newMeeting.value.date || !newMeeting.value.start_time || !newMeeting.value.end_time) {
+    toast.error('Preencha todos os campos obrigatórios.', { autoClose: 5000 });
+    return;
+  }
 
+  const allMeetings = await apiGetAllMeetings();
+
+  const isRoomAvailable = !allMeetings.some((meeting) => {
+    const meetingStart = new Date(meeting.date + ' ' + meeting.start_time); 
+    const meetingEnd = new Date(meeting.date + ' ' + meeting.end_time);
+    const newStart = new Date(newMeeting.value.date + ' ' + newMeeting.value.start_time); 
+    const newEnd = new Date(newMeeting.value.date + ' ' + newMeeting.value.end_time);
+
+    return (
+      meeting.room_id === newMeeting.value.room_id && 
+      ((meetingStart < newEnd && meetingStart >= newStart) || 
+      (meetingEnd > newStart && meetingEnd <= newEnd) || 
+      (newStart < meetingStart && newEnd > meetingEnd))
+    );
+  });
+
+  if (!isRoomAvailable) {
+    toast.error('A sala já está reservada para este horário.', { autoClose: 5000 });
+    return;
+  }
+
+  const payload = formatPayload();
+
+  try {
+    const createdMeeting = await apiCreateMeeting(payload);
     closeModal();
     increaseMeetings('add', createdMeeting);
     resetMeetingForm();
@@ -244,26 +285,35 @@ async function updateMeeting() {
   }
 }
 
+async function deleteMeeting(id) {
+  try {
+    console.log('Deletando reunião com ID:', id); 
+    await apiDeleteMeeting(id);
+    toast.success('Reunião deletada com sucesso', { autoClose: 5000 });
+    fetchMeetings(); 
+  } catch (error) {
+    console.error('Erro ao deletar a reunião:', error); 
+    toast.error("Erro ao cancelar Reunião", { autoClose: 5000 });
+  }
+}
+
+const checkWeekend = () =>{
+  const selectedDate = new Date(newMeeting.value.date)
+  const dayOfWeek = selectedDate.getDay();
+
+  if (dayOfWeek == 5 || dayOfWeek == 6){
+    toast.warning('Você selecionou um fim de semana, verifique se é isso mesmo')
+  }
+}
+
 function handleSubmit() {
   modalType.value === 'add' ? addMeeting() : updateMeeting();
 }
 
-onMounted(() => {
+onMounted(() =>{
   fetchMeetings();
-  fetchUsers(); 
-  fetchRooms(); 
+  generateAvailableHours();
 });
-
-const generateAvailableTimes = () => {
-  const times = []
-  for (let hour = 8; hour <= 17; hour++) {
-    const formattedHour = hour.toString().padStart(2, '0') + ':00';
-    times.push(formattedHour);
-  }
-  return times;
-};
-
-const availableTimes = generateAvailableTimes();
 </script>
 
 
@@ -271,7 +321,7 @@ const availableTimes = generateAvailableTimes();
 /* Sidebar */
 .sidebar {
   position: fixed;
- 
+  /* Fixa a barra lateral */
   left: 0;
   top: 0;
   height: 100vh;
