@@ -1,5 +1,6 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { apiGetUsers, apiGetMeetingRooms } from '@/http'
 
 const props = defineProps({
   show: Boolean,
@@ -14,14 +15,48 @@ const meetingName = ref('')
 const startTime = ref('')
 const endTime = ref('')
 const selectedRoom = ref('') // Variável para armazenar a sala selecionada
+const selectedResponsible = ref('') // Variável para armazenar o responsável selecionado
+const selectedStatus = ref('confirmed') // Variável para armazenar o status selecionado
+const description = ref('') // Variável para armazenar a descrição da reunião
+
+// Listas para os selects
+const roomsList = ref([])
+const usersList = ref([])
+const statusOptions = [
+  { id: 'confirmed', name: 'Confirmada' },
+  { id: 'canceled', name: 'Cancelada' }
+]
+
+// Função para buscar dados das salas
+const fetchRooms = async () => {
+  try {
+    const rooms = await apiGetMeetingRooms()
+    roomsList.value = rooms
+  } catch (error) {
+    console.error('Erro ao buscar salas:', error)
+  }
+}
+
+// Função para buscar dados dos usuários
+const fetchUsers = async () => {
+  try {
+    const users = await apiGetUsers()
+    usersList.value = users
+  } catch (error) {
+    console.error('Erro ao buscar usuários:', error)
+  }
+}
 
 const save = () => {
   emit('save', {
-    name: meetingName.value,
+    title: meetingName.value,
     date: props.date,
-    startTime: startTime.value,
-    endTime: endTime.value,
-    room: selectedRoom.value // Incluindo a sala selecionada nos dados a serem emitidos
+    start_time: startTime.value,
+    end_time: endTime.value,
+    room_id: selectedRoom.value,
+    user_id: selectedResponsible.value,
+    status: selectedStatus.value,
+    description: description.value
   })
   resetForm()
 }
@@ -30,8 +65,17 @@ const resetForm = () => {
   meetingName.value = ''
   startTime.value = ''
   endTime.value = ''
-  selectedRoom.value = '' // Resetando a sala selecionada
+  selectedRoom.value = ''
+  selectedResponsible.value = ''
+  selectedStatus.value = 'confirmed'
+  description.value = ''
 }
+
+// Carregar dados quando o componente for montado
+onMounted(() => {
+  fetchRooms()
+  fetchUsers()
+})
 
 // Função para formatar a data no formato brasileiro (DD/MM/AAAA)
 const formatDate = (dateString) => {
@@ -58,7 +102,20 @@ const formatDate = (dateString) => {
           <label for="room">Sala:</label>
           <select id="room" v-model="selectedRoom" required>
             <option value="" disabled selected>Selecione uma sala</option>
-            <option v-for="room in props.rooms" :key="room.id" :value="room.id">{{ room.name }}</option>
+            <option v-for="room in roomsList" :key="room.id" :value="room.id">{{ room.nome }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="responsible">Responsável:</label>
+          <select id="responsible" v-model="selectedResponsible" required>
+            <option value="" disabled selected>Selecione um responsável</option>
+            <option v-for="user in usersList" :key="user.id" :value="user.id">{{ user.name }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="status">Status:</label>
+          <select id="status" v-model="selectedStatus" required>
+            <option v-for="status in statusOptions" :key="status.id" :value="status.id">{{ status.name }}</option>
           </select>
         </div>
         <div class="form-group">
@@ -72,6 +129,10 @@ const formatDate = (dateString) => {
           <select id="endTime" v-model="endTime" required>
             <option v-for="time in availableTimes" :key="time" :value="time">{{ time }}</option>
           </select>
+        </div>
+        <div class="form-group">
+          <label for="description">Descrição:</label>
+          <textarea id="description" v-model="description" rows="3"></textarea>
         </div>
         <div class="button-group">
           <button type="submit">Salvar</button>

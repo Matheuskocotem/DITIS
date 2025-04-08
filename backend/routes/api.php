@@ -11,6 +11,15 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
 Route::post('/reset-password', [AuthController::class, 'reset']);
 
+// Rotas públicas para acesso frontend sem autenticação
+Route::get('/meeting-rooms', [MeetingRoomController::class, 'index']);
+Route::get('/users/index', [AuthController::class, 'index']);
+
+// Rotas para opções de select
+Route::get('/selects/users', [\App\Http\Controllers\SelectOptionsController::class, 'getUsers']);
+Route::get('/selects/rooms', [\App\Http\Controllers\SelectOptionsController::class, 'getRooms']);
+Route::get('/selects/meeting-statuses', [\App\Http\Controllers\SelectOptionsController::class, 'getMeetingStatuses']);
+
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::put('/update/{id}', [AuthController::class, 'update']);

@@ -9,6 +9,7 @@ import { apiDeleteRoom } from './delete-room'
 import { apiGetAllMeetings } from './get-all-meetings'
 import { apiCreateMeeting } from './create-meeting'
 import { apiUpdateMeeting } from './update-meeting'
+import { apiDeleteMeeting } from './delete-meeting'
 import { apiLogout } from './logout'
 import { apiUpdateStatus } from './update-status'
 import { apiGetSummaryData } from './getSummaryData'
@@ -17,6 +18,7 @@ import { apiUpdateUser } from './updateUser'
 import { apiCreateUser } from './createUser'
 import { apiDeleteUser } from './deleteUser'
 import { apiGetUserMeetings } from './get-user-meetings'
+import { apiGetUserOptions, apiGetRoomOptions, apiGetMeetingStatusOptions } from './get-select-options'
 
 export {
   apiLogin,
@@ -30,6 +32,7 @@ export {
   apiGetAllMeetings,
   apiCreateMeeting,
   apiUpdateMeeting,
+  apiDeleteMeeting,
   apiLogout,
   apiUpdateStatus,
   apiGetSummaryData,
@@ -37,5 +40,8 @@ export {
   apiUpdateUser,
   apiCreateUser,
   apiDeleteUser,
-  apiGetUserMeetings
+  apiGetUserMeetings,
+  apiGetUserOptions,
+  apiGetRoomOptions,
+  apiGetMeetingStatusOptions
 }
