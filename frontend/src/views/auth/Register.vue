@@ -250,14 +250,14 @@ main {
 
 .register-container {
   width: 38rem;
-  padding: 2.5rem;
+  padding: 1.5rem 2.5rem;
   background-color: var(--white);
   border-radius: 16px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: 0.25rem;
   position: relative;
   overflow: hidden;
   
@@ -272,23 +272,23 @@ main {
   }
 
   > img {
-    width: 50%;
-    max-width: 200px;
-    margin-bottom: 0.5rem;
+    width: 40%;
+    max-width: 180px;
+    margin-bottom: 0;
   }
 
   .title {
     font-weight: 600;
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     color: var(--gray-800);
-    margin: 0;
+    margin: -0.25rem 0 0;
   }
   
   .subtitle {
-    font-size: 1rem;
+    font-size: 0.9rem;
     color: var(--gray-600);
-    margin-top: 0;
-    margin-bottom: 1rem;
+    margin-top: -0.5rem;
+    margin-bottom: 0;
   }
 }
 
@@ -297,12 +297,12 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
+  gap: 0.5rem;
   
   .form-row {
     display: flex;
     width: 100%;
-    gap: 1.5rem;
+    gap: 0.75rem;
     
     @media (max-width: 768px) {
       flex-direction: column;
@@ -311,7 +311,7 @@ main {
   
   .register-button {
     width: 100%;
-    margin-top: 1rem;
+    margin-top: 0.25rem;
     padding: 0.875rem;
     border: none;
     border-radius: 8px;
@@ -351,9 +351,9 @@ main {
 }
 
 .login {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: var(--gray-600);
-  margin-top: 1rem;
+  margin-top: -1rem;
 
   a {
     color: var(--green-600);

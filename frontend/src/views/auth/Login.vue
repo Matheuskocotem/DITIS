@@ -163,14 +163,14 @@ main {
 
 .login-container {
   width: 28rem;
-  padding: 2.5rem;
+  padding: 1.5rem 2.5rem;
   background-color: var(--white);
   border-radius: 16px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
+  gap: 0.25rem;
   position: relative;
   overflow: hidden;
 
@@ -185,15 +185,15 @@ main {
   }
 
   > img {
-    width: 65%;
-    margin-bottom: 0.5rem;
+    width: 50%;
+    margin-bottom: 0;
   }
 
   .title {
     font-weight: 600;
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     color: var(--gray-800);
-    margin: 0;
+    margin: -0.25rem 0 0;
   }
 }
 
@@ -202,7 +202,7 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.25rem;
+  gap: 0.5rem;
   
   .forgot-password {
     align-self: flex-end;
@@ -260,8 +260,9 @@ main {
 }
 
 .register {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: var(--gray-600);
+  margin-top: -1rem;
 
   a {
     color: var(--green-600);
