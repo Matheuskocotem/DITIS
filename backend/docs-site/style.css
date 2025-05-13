@@ -1,0 +1,80 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', 'Arial', sans-serif;
+    background: #f8fafc;
+    color: #222;
+}
+header {
+    background: #1a202c;
+    color: #fff;
+    padding: 1.5rem 2rem;
+    text-align: left;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+header .project-name {
+    color: #38b2ac;
+    font-weight: bold;
+}
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+.sidebar {
+    width: 220px;
+    background: #2d3748;
+    color: #fff;
+    padding: 2rem 1rem 1rem 1rem;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.03);
+    min-height: 100vh;
+    position: sticky;
+    top: 0;
+}
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+.sidebar li {
+    margin-bottom: 1.25rem;
+}
+.sidebar a {
+    color: #cbd5e1;
+    text-decoration: none;
+    font-size: 1.1rem;
+    transition: color 0.2s;
+}
+.sidebar a:hover, .sidebar a:focus {
+    color: #38b2ac;
+}
+.content {
+    flex: 1;
+    padding: 2.5rem 4vw 2.5rem 3vw;
+    background: #fff;
+    min-height: 100vh;
+    box-shadow: 0 0 8px rgba(0,0,0,0.02);
+}
+h1, h2 {
+    font-weight: 700;
+}
+h2 {
+    color: #38b2ac;
+    margin-top: 2rem;
+}
+section {
+    margin-bottom: 2.5rem;
+}
+@media (max-width: 900px) {
+    .container {
+        flex-direction: column;
+    }
+    .sidebar {
+        width: 100%;
+        min-height: unset;
+        position: static;
+        box-shadow: none;
+        padding: 1rem;
+        text-align: center;
+    }
+    .content {
+        padding: 1.5rem 2vw;
+    }
+}

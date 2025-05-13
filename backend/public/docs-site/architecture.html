@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arquitetura - Documentação DITIS</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/docs-style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/atom-one-light.min.css">
+</head>
+<body>
+    <header class="fixed-header">
+        <h1>Documentação do Sistema <span class="project-name">DITIS</span></h1>
+    </header>
+    <div class="container">
+        <nav class="sidebar fixed-sidebar">
+            <ul class="main-menu">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="api.html">API</a></li>
+                <li><a href="architecture.html" class="active">Arquitetura</a></li>
+                <li><a href="examples.html">Exemplos</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+            </ul>
+            
+            <div class="submenu">
+                <h3>Nesta página</h3>
+                <ul>
+                    <li><a href="#visao-geral">Visão Geral</a></li>
+                    <li><a href="#backend">Backend (Laravel)</a></li>
+                    <li><a href="#frontend">Frontend (Vue.js)</a></li>
+                    <li><a href="#seguranca">Segurança</a></li>
+                </ul>
+            </div>
+        </nav>
+        <main class="content with-fixed-elements">
+            <section id="arquitetura">
+                <h2>Arquitetura do Sistema</h2>
+                <p>Detalhamento da arquitetura do DITIS, tecnologias utilizadas e fluxo de dados.</p>
+                
+                <div id="arquitetura-content"></div>
+            </section>
+        </main>
+    </div>
+    
+    <!-- Scripts de conteúdo -->
+    <script src="js/architecture.js"></script>
+    
+    <!-- Scripts de funcionalidade -->
+    <script src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Preencher conteúdo
+            if (window.architectureContent) document.getElementById('arquitetura-content').innerHTML = window.architectureContent;
+            
+            // Destacar código
+            hljs.highlightAll();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exemplos - Documentação DITIS</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/docs-style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/atom-one-light.min.css">
+</head>
+<body>
+    <header class="fixed-header">
+        <h1>Documentação do Sistema <span class="project-name">DITIS</span></h1>
+    </header>
+    <div class="container">
+        <nav class="sidebar fixed-sidebar">
+            <ul class="main-menu">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="api.html">API</a></li>
+                <li><a href="architecture.html">Arquitetura</a></li>
+                <li><a href="examples.html" class="active">Exemplos</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+            </ul>
+            
+            <div class="submenu">
+                <h3>Nesta página</h3>
+                <ul>
+                    <li><a href="#auth-examples">Autenticação</a></li>
+                    <li><a href="#room-examples">Salas</a></li>
+                    <li><a href="#meeting-examples">Reuniões</a></li>
+                    <li><a href="#form-examples">Formulários</a></li>
+                </ul>
+            </div>
+        </nav>
+        <main class="content with-fixed-elements">
+            <section id="exemplos">
+                <h2>Exemplos de Uso</h2>
+                <p>Exemplos práticos de como utilizar a API em aplicações frontend.</p>
+                
+                <div id="exemplos-content"></div>
+            </section>
+        </main>
+    </div>
+    
+    <!-- Scripts de conteúdo -->
+    <script src="js/examples-fixed.js"></script>
+    
+    <!-- Scripts de funcionalidade -->
+    <script src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Preencher conteúdo
+            if (window.examplesContent) document.getElementById('exemplos-content').innerHTML = window.examplesContent;
+            
+            // Destacar código
+            hljs.highlightAll();
+        });
+    </script>
+</body>
+</html>

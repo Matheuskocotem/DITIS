@@ -1,0 +1,191 @@
+/* Estilos específicos para documentação */
+
+/* Estilos gerais */
+:root {
+  --primary-color: #38b2ac;
+  --dark-bg: #1a202c;
+  --light-bg: #f8fafc;
+  --dark-text: #222;
+  --light-text: #cbd5e1;
+  --sidebar-bg: #2d3748;
+  --code-bg: #f1f5f8;
+  --code-border: #e2e8f0;
+  --success-bg: #f0fff4;
+  --success-border: #c6f6d5;
+  --error-bg: #fff5f5;
+  --error-border: #fed7d7;
+}
+
+.api-section,
+.architecture-section,
+.example-section,
+.faq-section {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.api-section h3,
+.architecture-section h3,
+.example-section h3,
+.faq-section .faq-item h3 {
+  color: var(--primary-color);
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #edf2f7;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+h4 {
+  margin-top: 1.5rem;
+  font-weight: 600;
+  color: #4a5568;
+}
+
+/* Navegação */
+.section-nav {
+  position: sticky;
+  top: 0;
+  padding: 1rem 0;
+  background-color: #fff;
+  z-index: 10;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.section-nav ul {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  overflow-x: auto;
+}
+
+.section-nav li {
+  margin-right: 1rem;
+  white-space: nowrap;
+}
+
+.section-nav a {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  text-decoration: none;
+  color: var(--dark-text);
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.section-nav a:hover,
+.section-nav a.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* Código */
+pre {
+  background: var(--code-bg);
+  border: 1px solid var(--code-border);
+  border-radius: 4px;
+  padding: 1rem;
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+}
+
+code {
+  font-family: 'Fira Code', Menlo, Monaco, Consolas, monospace;
+  font-size: 0.9rem;
+  background: var(--code-bg);
+  border-radius: 3px;
+  padding: 0.15rem 0.3rem;
+}
+
+pre code {
+  padding: 0;
+  background: transparent;
+}
+
+/* API Documentation */
+.api-description {
+  margin: 0.75rem 0 1.5rem 1rem;
+}
+
+ul.params {
+  list-style: none;
+  padding-left: 0;
+}
+
+ul.params li {
+  margin-bottom: 0.5rem;
+}
+
+.response {
+  margin: 1rem 0;
+  padding: 1rem;
+  border-radius: 4px;
+}
+
+.response.success {
+  background-color: var(--success-bg);
+  border-left: 4px solid var(--success-border);
+}
+
+.response.error {
+  background-color: var(--error-bg);
+  border-left: 4px solid var(--error-border);
+}
+
+.response pre {
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+/* Arquitetura */
+.architecture-diagram {
+  margin: 1.5rem 0;
+}
+
+.text-diagram {
+  font-family: 'Fira Code', Menlo, Monaco, Consolas, monospace;
+  white-space: pre;
+  line-height: 1.5;
+  font-size: 0.9rem;
+}
+
+/* FAQ */
+.faq-item {
+  margin-bottom: 1.5rem;
+}
+
+.faq-item h3 {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.faq-item h3::after {
+  content: "+";
+  font-size: 1.2rem;
+  margin-left: auto;
+  transition: transform 0.3s;
+}
+
+.faq-item.active h3::after {
+  transform: rotate(45deg);
+}
+
+.faq-answer {
+  padding-left: 1rem;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 900px) {
+  .section-nav ul {
+    flex-wrap: wrap;
+  }
+  
+  .section-nav li {
+    margin-bottom: 0.5rem;
+  }
+}

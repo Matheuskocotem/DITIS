@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API - Documentação DITIS</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/docs-style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/atom-one-light.min.css">
+</head>
+<body>
+    <header class="fixed-header">
+        <h1>Documentação do Sistema <span class="project-name">DITIS</span></h1>
+    </header>
+    <div class="container">
+        <nav class="sidebar fixed-sidebar">
+            <ul class="main-menu">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="api.html" class="active">API</a></li>
+                <li><a href="architecture.html">Arquitetura</a></li>
+                <li><a href="examples.html">Exemplos</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+            </ul>
+            
+            <div class="submenu">
+                <h3>Nesta página</h3>
+                <ul>
+                    <li><a href="#auth-api">Autenticação</a></li>
+                    <li><a href="#rooms-api">Salas</a></li>
+                    <li><a href="#meetings-api">Reuniões</a></li>
+                    <li><a href="#selects-api">Selects</a></li>
+                </ul>
+            </div>
+        </nav>
+        <main class="content with-fixed-elements">
+            <section id="api">
+                <h2>API</h2>
+                <p>Documentação completa de todos os endpoints, parâmetros, exemplos e respostas.</p>
+                
+                <div id="auth-api"></div>
+                <div id="rooms-api"></div>
+                <div id="meetings-api"></div>
+                <div id="selects-api"></div>
+            </section>
+        </main>
+    </div>
+    
+    <!-- Scripts de conteúdo -->
+    <script src="js/api-auth.js"></script>
+    <script src="js/api-rooms.js"></script>
+    <script src="js/api-meetings.js"></script>
+    <script src="js/api-selects.js"></script>
+    
+    <!-- Scripts de funcionalidade -->
+    <script src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Preencher as seções de API
+            if (window.authApiContent) document.getElementById('auth-api').innerHTML = window.authApiContent;
+            if (window.roomsApiContent) document.getElementById('rooms-api').innerHTML = window.roomsApiContent;
+            if (window.meetingsApiContent) document.getElementById('meetings-api').innerHTML = window.meetingsApiContent;
+            if (window.selectsApiContent) document.getElementById('selects-api').innerHTML = window.selectsApiContent;
+            
+            // Destacar código
+            hljs.highlightAll();
+        });
+    </script>
+</body>
+</html>
